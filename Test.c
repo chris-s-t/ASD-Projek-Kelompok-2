@@ -42,56 +42,47 @@ int main(){
         printf("9. Keluar\n\n");
         printf("pilihan anda : ");
         scanf("%d",&choice);
-        while (i == 0){
-            if (choice <= 9){
-                switch (choice){
-                    case 1:{
-                        tampilmenu();
-                        break;
-                    }
-                    case 2:{
-                        tambahdana();
-                        break;
-                    }
-                    case 3:{
-                        tambahpesanan();
-                        break;
-                    }
-                    case 4:{
-                        hapuspesanan();
-                        break;
-                    }
-                    case 5:{
-                        totalharga();
-                        break;
-                    }
-                    case 6:{
-                        metodepembayaran();
-                        break;
-                    }
-                    case 7:{
-                        dineortake();
-                        break;
-                    }
-                    case 8:{
-                        checkhistory();
-                        break;
-                    }
-                    case 9:{
-                        goto exit;
-                    }
-                }
-                i = 1;
+        switch (choice){
+            case 1:{
+                tampilmenu();
+                break;
             }
-            else{
-                printf("masukan pilihan yang benar!\n");
-                printf("pilihan anda : ");
-                scanf("%d",&choice);
-                i = 0;
+            case 2:{
+                tambahdana();
+                break;
+            }
+            case 3:{
+                tambahpesanan();
+                break;
+            }
+            case 4:{
+                hapuspesanan();
+                break;
+            }
+            case 5:{
+                totalharga();
+                break;
+            }
+            case 6:{
+                metodepembayaran();
+                break;
+            }
+            case 7:{
+                dineortake();
+                break;
+            }
+            case 8:{
+                checkhistory();
+                break;
+            }
+            case 9:{
+                printf("terima kasih telah menggunakan aplikasi kami!!!");
+                return 0;
+            }
+            default :{
+                printf ("masukan pilihan yang benar!\n\n");
             }
         }
-
     }
-    exit:
-    return 0;
+
 }
