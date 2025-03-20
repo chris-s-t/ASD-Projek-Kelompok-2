@@ -3,8 +3,9 @@
 // typedef struct pizza{
 
 // }pizza;
-void tampilmenu(){
 
+void tampilmenu(){
+    printf("Menu ditampilkan");
 }
 void tambahdana(){
 
@@ -27,21 +28,35 @@ void dineortake(){
 void checkhistory(){
 
 }
+
+int printMenu(int *choice) {
+    int i;
+    char menu[100][100] = {"Tampilkan Menu Makanan",
+        "Tampilkan Menu Minuman",
+        "Tambahkan Dana",
+        "Tambah Pesanan",
+        "Hapus Pesanan",
+        "Total Harga",
+        "Jenis Pembayaran",
+        "Check History Pesanan",
+    };
+
+    printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
+
+    for (i = 0; i < 10; i++) {
+        printf("%d. %s\n", i+1, menu[i]);
+    }
+
+    printf("Masukkan pilihan anda : ");
+    scanf("%d",&choice);
+}
+
 int main(){
     int choice = 0, i=0;
+
     while(1){
-        printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
-        printf("1. Tampilkan Menu\n");
-        printf("2. Tambahkan Dana\n");
-        printf("3. Tambah Pesanan\n");
-        printf("4. Hapus Pesanan\n");
-        printf("5. Total Harga\n");
-        printf("6. Jenis Pembayaran\n");
-        printf("7. Dine in/Take away\n");
-        printf("8. Check History Pesanan\n");
-        printf("9. Keluar\n\n");
-        printf("pilihan anda : ");
-        scanf("%d",&choice);
+        choice = printMenu(choice);
+
         switch (choice){
             case 1:{
                 tampilmenu();
