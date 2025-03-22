@@ -1,12 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // typedef struct pizza{
 
 // }pizza;
 
-void tampilmenu(){
-    printf("Menu ditampilkan");
+void menuMakanan() {
+    int counter;
+    menuMakan Makanan;
+    FILE *menu = fopen("menuMakanan.txt", "r");
+    while (!feof(menu)) {
+        fscanf(menu, "%[^#]#%d\n",
+                   menu.Nama,
+                   &menu.Harga);
+    }
 }
+}
+void tampilkanMenu(char Tipe[]) {
+    printf("Menampilkan Menu Makanan\n");
+
+}
+
 void tambahdana(){
 
 }
@@ -29,41 +43,45 @@ void checkhistory(){
 
 }
 
-int printMenu(int *choice) {
-    int i;
-    char menu[100][100] = {"Tampilkan Menu Makanan",
-        "Tampilkan Menu Minuman",
-        "Tambahkan Dana",
+int printMenu() {
+    int i, choice;
+    char menu[][25] = {"Tampilkan Menu",
         "Tambah Pesanan",
         "Hapus Pesanan",
         "Total Harga",
         "Jenis Pembayaran",
         "Check History Pesanan",
+        "Cek Keranjang"
     };
 
-    printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
+    printf("Welcome To Pizza Hut (Food And Drinks Ordering)\n");
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 8; i++) {
         printf("%d. %s\n", i+1, menu[i]);
     }
 
     printf("Masukkan pilihan anda : ");
-    scanf("%d",&choice);
-}
+    scanf("%d", &choice);
 
+    return choice;
+}
 int main(){
-    int choice = 0, i=0;
+    char namaMakanan[100][100];
+    char hargaMakanan[100][100];
+
+    namaMakanan = menuMakanan(namaMakanan);
+    int choice, i=0;
+    char orderType[20];
 
     while(1){
-        choice = printMenu(choice);
-
+        choice = printMenu();
         switch (choice){
             case 1:{
-                tampilmenu();
+                tampilkanMenu();
                 break;
             }
             case 2:{
-                tambahdana();
+                tambahpesanan();
                 break;
             }
             case 3:{
