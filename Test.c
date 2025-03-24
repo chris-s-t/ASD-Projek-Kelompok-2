@@ -4,18 +4,25 @@
 // typedef struct pizza{
 
 // }pizza;
+typedef struct{
+    char name[50];
+    int harga;
+}menuMakan;
 
 void menuMakanan() {
-    int counter;
-    menuMakan Makanan;
-    FILE *menu = fopen("menuMakanan.txt", "r");
-    while (!feof(menu)) {
-        fscanf(menu, "%[^#]#%d\n",
+    int counter = 0;
+    menuMakan makanan[50];
+    FILE *fp = fopen("menuMakanan.txt", "r");
+    while (!feof(fp)) {
+        menuMakan menu;
+        fscanf(fp, "%[^#]#%d\n",
                    menu.Nama,
                    &menu.Harga);
+        makanan[counter] = menu;
+        counter++;
     }
 }
-}
+
 void tampilkanMenu(char Tipe[]) {
     printf("Menampilkan Menu Makanan\n");
 
