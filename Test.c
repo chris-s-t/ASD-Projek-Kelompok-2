@@ -9,23 +9,20 @@ typedef struct{
     int harga;
 }menuMakan;
 
-void menuMakanan() {
+void menuMakanan(menuMakan makanan[]) {
     int counter = 0;
-    menuMakan makanan[50];
     FILE *fp = fopen("menuMakanan.txt", "r");
-    while (!feof(fp)) {
-        menuMakan menu;
-        fscanf(fp, "%[^#]#%d\n",
-                   menu.Nama,
-                   &menu.Harga);
-        makanan[counter] = menu;
+    while ((fscanf(fp, "%[^#]#%d\n",makanan[counter].name,&makanan[counter].harga)) == 2){
         counter++;
     }
+    fclose(fp); 
 }
 
-void tampilkanMenu(char Tipe[]) {
+void tampilkanMenu(menuMakan makanan[]) {
     printf("Menampilkan Menu Makanan\n");
-
+    for(int i = 0; i <= 50 ; i++){
+        printf("%d. %s harga : Rp%d \n", i+1, makanan[i].name, makanan[i].harga);
+    }
 }
 
 void tambahdana(){
@@ -73,10 +70,8 @@ int printMenu() {
     return choice;
 }
 int main(){
-    char namaMakanan[100][100];
-    char hargaMakanan[100][100];
-
-    namaMakanan = menuMakanan(namaMakanan);
+    menuMakan makanan[50];
+    menuMakanan(makanan);
     int choice, i=0;
     char orderType[20];
 
@@ -84,7 +79,7 @@ int main(){
         choice = printMenu();
         switch (choice){
             case 1:{
-                tampilkanMenu();
+                tampilkanMenu(makanan);
                 break;
             }
             case 2:{
