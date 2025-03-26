@@ -111,11 +111,11 @@ int main(){
                 break;
             }
             case 9:{
-                printf("terima kasih telah menggunakan aplikasi kami!!!");
+                printf("Terima kasih telah menggunakan aplikasi kami!!!");
                 return 0;
             }
             default :{
-                printf ("masukan pilihan yang benar!\n\n");
+                printf ("Masukkan pilihan yang benar!\n\n");
             }
         }
     }
