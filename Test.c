@@ -2,23 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Struct untuk pesanan
 typedef struct pesan{
     char pesanan[50];
     struct pesan *next;
 }pesan;
 
-// Struct for Menu
+// Struct untuk menu makanan dan minuman
 typedef struct{
     char name[50];
     int harga;
-}menuStructmakan;
+}menuStruct;
 
-typedef struct{
-    char name[50];
-    int harga;
-}menuStructminum;
-
-void menuMakanan(menuStructmakan makanan[]) {
+// Menginisialisasi menu makanan dan minuman dengan file processing
+void menuMakanan(menuStruct makanan[], menuStruct minuman[]) {
+    // Inisialisasi menu makanan
     int counter = 0;
     FILE *fp = fopen("menuMakanan.txt", "r");
     if (!fp) {
@@ -29,11 +27,10 @@ void menuMakanan(menuStructmakan makanan[]) {
         counter++;
     }
     fclose(fp);
-}
 
-void menuMinuman(menuStructminum minuman[]) {
-    int counter = 0;
-    FILE *fp = fopen("menuMinuman.txt", "r");
+    // Inisialisasi menu minuman
+    counter = 0;
+    fp = fopen("menuMinuman.txt", "r");
     if (!fp) {
         printf("Error: Tidak bisa membuka file menuMinuman.txt\n");
         return;
@@ -44,52 +41,49 @@ void menuMinuman(menuStructminum minuman[]) {
     fclose(fp);
 }
 
-void tampilkanMenu(menuStructmakan makanan[], menuStructminum minuman[]) {
+// Menampilkan menu makanan dan minuman dalam tabel
+void tampilkanMenu(menuStruct makanan[], menuStruct minuman[]) {
     printf("Menampilkan Menu Makanan\n");
     printf("============================================================   ============================================================\n");
     printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
     printf("============================================================   ============================================================\n");
-    // for(int i = 0; i < 15 ; i++){
-    //     printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
-    // }
-    // printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",16, makanan[15].name, makanan[15].harga);
-    // for(int i = 16; i < 40 ; i++){
-    //     printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
-    // }
-    // printf("============================================================\n");
-    // atau
+
     for(int i = 0; i < 40 ; i++){
-        if (i <= 15){
+        if (i < 15){
             printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
         }
-        else if ( i == 16){
+        else if ( i == 15){
             printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",i, makanan[i].name, makanan[i].harga);
         }
-        else{  
+        else{
             printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
         }
     }
     printf("============================================================\n");
 }
 
+// Menambahkan pesanan ke keranjang
 void tambahpesanan(pesan **head, pesan **tail){
     char temp[50];
+
     pesan *node;
     node = (pesan *) malloc(sizeof(pesan));
+
     printf("masukan pesanan : ");
     fgets(temp, sizeof(temp), stdin);
     temp[strcspn(temp, "\n")] = '\0';
     strcpy(node->pesanan, temp);
     node->next = NULL;
+
     if ((*head) == NULL){
         (*head) = (*tail) = node;
     }else{
-        (*tail)->next = node; 
+        (*tail)->next = node;
         (*tail) = node;
     }
 }
 void tambahdana(){
-    
+
 }
 void hapuspesanan(){
 
@@ -100,6 +94,8 @@ void totalharga(){
 void metodepembayaran(){
 
 }
+
+// Menampilkan isi keranjang
 void tampilkeranjang(pesan **head){
     pesan *temp = *head;
     int i = 1;
@@ -115,6 +111,7 @@ void checkhistory(){
 
 }
 
+// Menampilkan menu utama
 int printMenu() {
     int i, choice;
     char menu[][25] = {"Tampilkan Menu",
@@ -138,13 +135,14 @@ int printMenu() {
 
     return choice;
 }
+
+// Main
 int main(){
-    menuStructmakan makanan[40];
-    menuStructminum minuman[15];
+    menuStruct makanan[40];
+    menuStruct minuman[15];
     pesan *head, *tail;
     head = tail = NULL;
-    menuMakanan(makanan);
-    menuMinuman(minuman);
+    menuMakanan(makanan, minuman);
     int choice, i=0;
     char orderType[20];
 
