@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct pesan{
+    char pesanan[50];
+    struct pesan *next;
+}pesan;
+
 // Struct for Menu
 typedef struct{
     char name[50];
@@ -67,11 +72,24 @@ void tampilkanMenu(menuStructmakan makanan[], menuStructminum minuman[]) {
     printf("============================================================\n");
 }
 
-void tambahdana(){
-
+void tambahpesanan(pesan **head, pesan **tail){
+    char temp[50];
+    pesan *node;
+    node = (pesan *) malloc(sizeof(pesan));
+    printf("masukan pesanan : ");
+    fgets(temp, sizeof(temp), stdin);
+    temp[strcspn(temp, "\n")] = '\0';
+    strcpy(node->pesanan, temp);
+    node->next = NULL;
+    if ((*head) == NULL){
+        (*head) = (*tail) = node;
+    }else{
+        (*tail)->next = node; 
+        (*tail) = node;
+    }
 }
-void tambahpesanan(){
-
+void tambahdana(){
+    
 }
 void hapuspesanan(){
 
@@ -82,8 +100,16 @@ void totalharga(){
 void metodepembayaran(){
 
 }
-void dineortake(){
-
+void tampilkeranjang(pesan **head){
+    pesan *temp = *head;
+    int i = 1;
+    printf("keranjang anda :\n");
+    while(temp != NULL){
+        printf("%d. %s\n", i, temp->pesanan);
+        temp = temp->next;
+        i++;
+    }
+    printf("\n\n");
 }
 void checkhistory(){
 
@@ -102,22 +128,26 @@ int printMenu() {
 
     printf("Welcome To Pizza Hut (Food And Drinks Ordering)\n");
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 7; i++) {
         printf("%d. %s\n", i+1, menu[i]);
     }
 
     printf("Masukkan pilihan anda : ");
     scanf("%d", &choice);
+    getchar();
 
     return choice;
 }
 int main(){
     menuStructmakan makanan[40];
     menuStructminum minuman[15];
+    pesan *head, *tail;
+    head = tail = NULL;
     menuMakanan(makanan);
     menuMinuman(minuman);
     int choice, i=0;
     char orderType[20];
+
 
     while(1){
         choice = printMenu();
@@ -127,34 +157,30 @@ int main(){
                 break;
             }
             case 2:{
-                tambahpesanan();
+                tambahpesanan(&head, &tail);
                 break;
             }
             case 3:{
-                tambahpesanan();
-                break;
-            }
-            case 4:{
                 hapuspesanan();
                 break;
             }
-            case 5:{
+            case 4:{
                 totalharga();
                 break;
             }
-            case 6:{
+            case 5:{
                 metodepembayaran();
                 break;
             }
-            case 7:{
-                dineortake();
-                break;
-            }
-            case 8:{
+            case 6:{
                 checkhistory();
                 break;
             }
-            case 9:{
+            case 7:{
+                tampilkeranjang(&head);
+                break;
+            }
+            case 8:{
                 printf("Terima kasih telah menggunakan aplikasi kami!!!");
                 return 0;
             }
@@ -163,5 +189,4 @@ int main(){
             }
         }
     }
-
 }
