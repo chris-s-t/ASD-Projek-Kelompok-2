@@ -47,8 +47,8 @@ void tampilkanMenu(menuStructmakan makanan[], menuStructminum minuman[]) {
     for(int i = 0; i < 15 ; i++){
         printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
     }
-    printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",15, makanan[14].name, makanan[14].harga);
-    for(int i = 15; i < 40 ; i++){
+    printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",16, makanan[15].name, makanan[15].harga);
+    for(int i = 16; i < 40 ; i++){
         printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
     }
     printf("============================================================\n");
