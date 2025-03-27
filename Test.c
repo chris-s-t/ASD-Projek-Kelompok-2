@@ -1,28 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// typedef struct pizza{
 
-// }pizza;
+// Struct for Menu
 typedef struct{
     char name[50];
     int harga;
-}menuMakan;
+}menuStruct;
 
-void menuMakanan(menuMakan makanan[]) {
+void menuMakanan(menuStruct makanan[]) {
     int counter = 0;
     FILE *fp = fopen("menuMakanan.txt", "r");
     while ((fscanf(fp, "%[^#]#%d\n",makanan[counter].name,&makanan[counter].harga)) == 2){
         counter++;
     }
-    fclose(fp); 
+    fclose(fp);
 }
 
-void tampilkanMenu(menuMakan makanan[]) {
+void tampilkanMenu(menuStruct makanan[]) {
     printf("Menampilkan Menu Makanan\n");
-    for(int i = 0; i <= 50 ; i++){
-        printf("%d. %s harga : Rp%d \n", i+1, makanan[i].name, makanan[i].harga);
+    printf("============================================================   ============================================================\n");
+    printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
+    printf("============================================================   ============================================================\n");
+    for(int i = 0; i < 40 ; i++){
+        printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, makanan[i].name, makanan[i].harga);
     }
+    printf("============================================================   ============================================================\n");
+   /*
+    printf("|ID| %27s%13s | %7s%3s |\n", "Nama Minuman", "", "Harga", "");
+    printf("============================================================\n");
+    for(int i = 0; i < 40 ; i++){
+        printf("|%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga);
+    }
+    printf("============================================================\n");
+   */
 }
 
 void tambahdana(){
@@ -70,7 +81,7 @@ int printMenu() {
     return choice;
 }
 int main(){
-    menuMakan makanan[50];
+    menuStruct makanan[40];
     menuMakanan(makanan);
     int choice, i=0;
     char orderType[20];
