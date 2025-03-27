@@ -6,34 +6,52 @@
 typedef struct{
     char name[50];
     int harga;
-}menuStruct;
+}menuStructmakan;
 
-void menuMakanan(menuStruct makanan[]) {
+typedef struct{
+    char name[50];
+    int harga;
+}menuStructminum;
+
+void menuMakanan(menuStructmakan makanan[]) {
     int counter = 0;
     FILE *fp = fopen("menuMakanan.txt", "r");
-    while ((fscanf(fp, "%[^#]#%d\n",makanan[counter].name,&makanan[counter].harga)) == 2){
+    if (!fp) {
+        printf("Error: Tidak bisa membuka file menuMakanan.txt\n");
+        return;
+    }
+    while (counter < 40 && (fscanf(fp, "%[^#]#%d\n",makanan[counter].name,&makanan[counter].harga)) == 2){
         counter++;
     }
     fclose(fp);
 }
 
-void tampilkanMenu(menuStruct makanan[]) {
+void menuMinuman(menuStructminum minuman[]) {
+    int counter = 0;
+    FILE *fp = fopen("menuMinuman.txt", "r");
+    if (!fp) {
+        printf("Error: Tidak bisa membuka file menuMinuman.txt\n");
+        return;
+    }
+    while (counter < 15 && (fscanf(fp, "%[^#]#%d\n",minuman[counter].name,&minuman[counter].harga)) == 2){
+        counter++;
+    }
+    fclose(fp);
+}
+
+void tampilkanMenu(menuStructmakan makanan[], menuStructminum minuman[]) {
     printf("Menampilkan Menu Makanan\n");
     printf("============================================================   ============================================================\n");
     printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
     printf("============================================================   ============================================================\n");
-    for(int i = 0; i < 40 ; i++){
-        printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, makanan[i].name, makanan[i].harga);
+    for(int i = 0; i < 15 ; i++){
+        printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
     }
-    printf("============================================================   ============================================================\n");
-   /*
-    printf("|ID| %27s%13s | %7s%3s |\n", "Nama Minuman", "", "Harga", "");
-    printf("============================================================\n");
-    for(int i = 0; i < 40 ; i++){
-        printf("|%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga);
+    printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",15, makanan[14].name, makanan[14].harga);
+    for(int i = 15; i < 40 ; i++){
+        printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
     }
     printf("============================================================\n");
-   */
 }
 
 void tambahdana(){
@@ -81,8 +99,10 @@ int printMenu() {
     return choice;
 }
 int main(){
-    menuStruct makanan[40];
+    menuStructmakan makanan[40];
+    menuStructminum minuman[15];
     menuMakanan(makanan);
+    menuMinuman(minuman);
     int choice, i=0;
     char orderType[20];
 
@@ -90,7 +110,7 @@ int main(){
         choice = printMenu();
         switch (choice){
             case 1:{
-                tampilkanMenu(makanan);
+                tampilkanMenu(makanan, minuman);
                 break;
             }
             case 2:{
