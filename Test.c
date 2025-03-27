@@ -44,12 +44,25 @@ void tampilkanMenu(menuStructmakan makanan[], menuStructminum minuman[]) {
     printf("============================================================   ============================================================\n");
     printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
     printf("============================================================   ============================================================\n");
-    for(int i = 0; i < 15 ; i++){
-        printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
-    }
-    printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",16, makanan[15].name, makanan[15].harga);
-    for(int i = 16; i < 40 ; i++){
-        printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
+    // for(int i = 0; i < 15 ; i++){
+    //     printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
+    // }
+    // printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",16, makanan[15].name, makanan[15].harga);
+    // for(int i = 16; i < 40 ; i++){
+    //     printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
+    // }
+    // printf("============================================================\n");
+    // atau
+    for(int i = 0; i < 40 ; i++){
+        if (i <= 15){
+            printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i+1, makanan[i].name, makanan[i].harga, i+1, minuman[i].name, minuman[i].harga);
+        }
+        else if ( i == 16){
+            printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n",i, makanan[i].name, makanan[i].harga);
+        }
+        else{  
+            printf("|%-2d| %-40s | Rp. %-6d |\n",i+1, makanan[i].name, makanan[i].harga);
+        }
     }
     printf("============================================================\n");
 }
