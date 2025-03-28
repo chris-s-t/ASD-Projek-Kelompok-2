@@ -59,8 +59,13 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[]) {
 
 // Menambahkan pesanan ke keranjang
 void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[]){
-    int choice, pilih, harga;
-    char temp[50];
+    int choice, pilih;
+    menuStruct *node;
+    node = (menuStruct *) malloc(sizeof(menuStruct));
+    if (!node) {
+        printf("Gagal mengalokasikan memori!\n");
+        return;
+    }
     printf("mau (1)makanan atau (2)minuman : "); 
     scanf("%d",&choice);
     getchar();
@@ -72,8 +77,8 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
             printf("masukan pilihan yang benar!");
             return;
         }
-        strcpy(temp, makanan[pilih-1].name);
-        harga = makanan[pilih-1].harga;
+        strcpy(node->name, makanan[pilih-1].name);
+        node->harga = makanan[pilih-1].harga;
     }else if (choice == 2){
         printf("masukan minuman pilihan anda : ");
         scanf("%d",&pilih);
@@ -82,22 +87,13 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
             printf("masukan pilihan yang benar!");
             return;
         }
-        strcpy(temp, minuman[pilih-1].name);
-        harga = minuman[pilih-1].harga;
+        strcpy(node->name, minuman[pilih-1].name);
+        node->harga = minuman[pilih-1].harga;
     }else{
         printf("masukan pilihan yang benar!");
         return;
     }
-    menuStruct *node;
-    node = (menuStruct *) malloc(sizeof(menuStruct));
-    if (!node) {
-        printf("Gagal mengalokasikan memori!\n");
-        return;
-    }
-    strcpy(node->name, temp);
-    node->harga = harga;
     node->next = NULL;
-
     if ((*head) == NULL){
         (*head) = (*tail) = node;
     }else{
