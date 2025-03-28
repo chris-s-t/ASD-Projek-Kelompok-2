@@ -101,19 +101,56 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         (*tail) = node;
     }
 }
-void tambahdana(){
-
+void tambahdana(int *dana){
+    int tambah = 0;
+    printf("Input dana: Rp. ");
+    scanf("%d", &tambah);
+    *dana += tambah;
+    printf("\n");
 }
 void hapuspesanan(){
 
 }
-void totalharga(){
-
+void totalharga(menuStruct **head, int *total){
+    menuStruct *temp = *head;
+    *total = 0;
+    int i = 1;
+    while(temp != NULL){
+        *total += temp->harga;
+        temp = temp->next;
+        i++;
+    }
+    printf("Total harga : Rp. %d\n", *total);
 }
-void metodepembayaran(){
-
+void metodepembayaran(int *dana, int total){
+    int choice;
+    while(1){
+        printf("Total harga: Rp. %d\nTotal dana: Rp. %d\nMetode pembayaran\n1. Cash\n2. Credit\n3. Tambah credit\n4. Kembali\nPilih metode pembayaran : ", total, *dana);
+        scanf("%d", &choice);
+        switch (choice){
+            case 1:{
+                printf("Pembayaran: Cash\nTerima kasih atas pesananya!\n\n\n");
+                return;
+            }
+            case 2:{
+                if (*dana < total){
+                    printf("Dana tidak cukup, silahkan isi dana atau pilih metode lain.\n\n");
+                    break;
+                }
+                printf("Pembayaran: Credit\nTerima kasih atas pesananya!\n\n\n");
+                return;
+            }
+            case 3:{
+                tambahdana(&*dana);
+                break;
+            }
+            case 4:{
+                printf("\n\n");
+                return;
+            }
+        }
+    }
 }
-
 // Menampilkan isi keranjang
 void tampilkeranjang(menuStruct **head){
     menuStruct *temp = *head;
@@ -160,7 +197,7 @@ int main(){
     menuStruct makanan[40], minuman[40], *head, *tail;
     head = tail = NULL;
     menuMakanan(makanan, minuman);
-    int choice, i=0;
+    int choice, i = 0, dana = 0, total = 0;
     char orderType[20];
 
 
@@ -180,11 +217,11 @@ int main(){
                 break;
             }
             case 4:{
-                totalharga();
+                totalharga(&head, &total);
                 break;
             }
             case 5:{
-                metodepembayaran();
+                metodepembayaran(&dana, total);
                 break;
             }
             case 6:{
