@@ -108,8 +108,43 @@ void tambahdana(int *dana){
     *dana += tambah;
     printf("\n");
 }
-void hapuspesanan(){
-
+void hapuspesanan(menuStruct **head, menuStruct **tail) {
+    if (*head == NULL) {
+        printf("Belum ada pesanan yang terisi\n");
+        return;
+    }
+    menuStruct *temp = *head;
+    int i = 1, del;
+    printf("Keranjang anda:\n");
+    while (temp != NULL) {
+        printf("%d. %s\n", i, temp->name);
+        temp = temp->next;
+        i++;
+    }
+    printf("Hapus pesanan no: ");
+    scanf("%d", &del);
+    if (del < 1 || del >= i) {
+        printf("Nomor pesanan tidak valid!\n");
+        return;
+    }
+    temp = *head;
+    if (del == 1) {
+        *head = (*head)->next;
+        free(temp);
+        if (*head == NULL) 
+            *tail = NULL;
+        return;
+    }
+    for (int j = 1; j < del - 1; j++) {
+        temp = temp->next;
+    }
+    menuStruct *deleteNode = temp->next;
+    temp->next = deleteNode->next;
+    if (deleteNode == *tail) {
+        *tail = temp;
+    }
+    free(deleteNode);
+    printf("Pesanan nomor %d berhasil dihapus.\n", del);
 }
 void totalharga(menuStruct **head, int *total){
     menuStruct *temp = *head;
@@ -213,7 +248,7 @@ int main(){
                 break;
             }
             case 3:{
-                hapuspesanan();
+                hapuspesanan(&head, &tail);
                 break;
             }
             case 4:{
