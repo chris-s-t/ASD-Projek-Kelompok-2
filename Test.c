@@ -189,46 +189,12 @@ void totalharga(menuStruct **head, int *total)
     }
     printf("Total harga : Rp. %d\n", *total);
 }
-void metodepembayaran(int *dana, int total)
-{
-    int choice;
-    while (1)
-    {
-        printf("Total harga: Rp. %d\nTotal dana: Rp. %d\nMetode pembayaran\n1. Cash\n2. Credit\n3. Tambah credit\n4. Kembali\nPilih metode pembayaran : ", total, *dana);
-        scanf("%d", &choice);
-        switch (choice)
-        {
-        case 1:
-        {
-            printf("Pembayaran: Cash\nTerima kasih atas pesananya!\n\n\n");
-            return;
-        }
-        case 2:
-        {
-            if (*dana < total)
-            {
-                printf("Dana tidak cukup, silahkan isi dana atau pilih metode lain.\n\n");
-                break;
-            }
-            printf("Pembayaran: Credit\nTerima kasih atas pesananya!\n\n\n");
-            return;
-        }
-        case 3:
-        {
-            tambahdana(&*dana);
-            break;
-        }
-        case 4:
-        {
-            printf("\n\n");
-            return;
-        }
-        }
-    }
-}
 // Menampilkan isi keranjang
-void tampilkeranjang(menuStruct **head)
-{
+void tampilkeranjang(menuStruct **head){
+    if(*head==NULL){
+        printf("Keranjang anda kosong\n\n");
+        return;
+    }
     menuStruct *temp = *head;
     int i = 1;
     printf("\nkeranjang anda :\n");
@@ -241,8 +207,7 @@ void tampilkeranjang(menuStruct **head)
     printf("\n\n");
 }
 
-void checkhistory()
-{
+void checkhistory(){
     FILE *fp = fopen("history.txt", "r");
     if (!fp)
     {
@@ -261,7 +226,6 @@ void checkhistory()
     printf("===========================\n");
     fclose(fp);
 }
-
 void checkout(menuStruct **head, menuStruct **tail)
 {
     static int historyCount = 1;
@@ -336,7 +300,6 @@ void checkout(menuStruct **head, menuStruct **tail)
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
 }
-
 // Menampilkan menu utama
 int printMenu()
 {
@@ -348,12 +311,11 @@ int printMenu()
                        "Metode Pembayaran",
                        "Cek History",
                        "Tampilkan Keranjang",
-                       "Checkout",
                        "Keluar" };
 
     printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
 
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < 8; i++)
     {
         printf("%d. %s\n", i + 1, menu[i]);
     }
@@ -364,7 +326,6 @@ int printMenu()
 
     return choice;
 }
-
 // Main
 int main()
 {
@@ -377,57 +338,51 @@ int main()
     while (1)
     {
         choice = printMenu();
-        switch (choice)
-        {
-        case 1:
-        {
-            tampilkanMenu(makanan, minuman);
-            break;
-        }
-        case 2:
-        {
-            tambahpesanan(&head, &tail, makanan, minuman);
-            break;
-        }
-        case 3:
-        {
-            hapuspesanan(&head, &tail);
-            break;
-        }
-        case 4:
-        {
-            totalharga(&head, &total);
-            break;
-        }
-        case 5:
-        {
-            metodepembayaran(&dana, total);
-            break;
-        }
-        case 6:
-        {
-            checkhistory();
-            break;
-        }
-        case 7:
-        {
-            tampilkeranjang(&head);
-            break;
-        }
-        case 8:
-        {
-            checkout(&head, &tail);
-            break;
-        }
-        case 9:
-        {
-            printf("Terima kasih telah menggunakan aplikasi kami!!!");
-            return 0;
-        }
-        default:
-        {
-            printf("Masukkan pilihan yang benar!\n\n");
-        }
+        switch (choice){
+            case 1:
+            {
+                tampilkanMenu(makanan, minuman);
+                break;
+            }
+            case 2:
+            {
+                tambahpesanan(&head, &tail, makanan, minuman);
+                break;
+            }
+            case 3:
+            {
+                hapuspesanan(&head, &tail);
+                break;
+            }
+            case 4:
+            {
+                totalharga(&head, &total);
+                break;
+            }
+            case 5:
+            {
+                checkout(&head, &tail);
+                break;
+            }
+            case 6:
+            {
+                checkhistory();
+                break;
+            }
+            case 7:
+            {
+                tampilkeranjang(&head);
+                break;
+            }
+            case 8:
+            {
+                printf("Terima kasih telah menggunakan aplikasi kami!!!");
+                return 0;
+            }
+            default:
+            {
+                printf("Masukkan pilihan yang benar!\n\n");
+            }
         }
     }
 }
