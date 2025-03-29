@@ -123,88 +123,106 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         (*tail) = node;
     }
 }
-void tambahdana(int *dana){
+void tambahdana(int *dana)
+{
     int tambah = 0;
     printf("Input dana: Rp. ");
     scanf("%d", &tambah);
     *dana += tambah;
     printf("\n");
 }
-void hapuspesanan(menuStruct **head, menuStruct **tail) {
-    if (*head == NULL) {
+void hapuspesanan(menuStruct **head, menuStruct **tail)
+{
+    if (*head == NULL)
+    {
         printf("Belum ada pesanan yang terisi\n");
         return;
     }
     menuStruct *temp = *head;
     int i = 1, del;
     printf("Keranjang anda:\n");
-    while (temp != NULL) {
+    while (temp != NULL)
+    {
         printf("%d. %s\n", i, temp->name);
         temp = temp->next;
         i++;
     }
     printf("Hapus pesanan no: ");
     scanf("%d", &del);
-    if (del < 1 || del >= i) {
+    if (del < 1 || del >= i)
+    {
         printf("Nomor pesanan tidak valid!\n");
         return;
     }
     temp = *head;
-    if (del == 1) {
+    if (del == 1)
+    {
         *head = (*head)->next;
         free(temp);
-        if (*head == NULL) 
+        if (*head == NULL)
             *tail = NULL;
         return;
     }
-    for (int j = 1; j < del - 1; j++) {
+    for (int j = 1; j < del - 1; j++)
+    {
         temp = temp->next;
     }
     menuStruct *deleteNode = temp->next;
     temp->next = deleteNode->next;
-    if (deleteNode == *tail) {
+    if (deleteNode == *tail)
+    {
         *tail = temp;
     }
     free(deleteNode);
     printf("Pesanan nomor %d berhasil dihapus.\n", del);
 }
-void totalharga(menuStruct **head, int *total){
+void totalharga(menuStruct **head, int *total)
+{
     menuStruct *temp = *head;
     *total = 0;
     int i = 1;
-    while(temp != NULL){
+    while (temp != NULL)
+    {
         *total += temp->harga;
         temp = temp->next;
         i++;
     }
     printf("Total harga : Rp. %d\n", *total);
 }
-void metodepembayaran(int *dana, int total){
+void metodepembayaran(int *dana, int total)
+{
     int choice;
-    while(1){
+    while (1)
+    {
         printf("Total harga: Rp. %d\nTotal dana: Rp. %d\nMetode pembayaran\n1. Cash\n2. Credit\n3. Tambah credit\n4. Kembali\nPilih metode pembayaran : ", total, *dana);
         scanf("%d", &choice);
-        switch (choice){
-            case 1:{
-                printf("Pembayaran: Cash\nTerima kasih atas pesananya!\n\n\n");
-                return;
-            }
-            case 2:{
-                if (*dana < total){
-                    printf("Dana tidak cukup, silahkan isi dana atau pilih metode lain.\n\n");
-                    break;
-                }
-                printf("Pembayaran: Credit\nTerima kasih atas pesananya!\n\n\n");
-                return;
-            }
-            case 3:{
-                tambahdana(&*dana);
+        switch (choice)
+        {
+        case 1:
+        {
+            printf("Pembayaran: Cash\nTerima kasih atas pesananya!\n\n\n");
+            return;
+        }
+        case 2:
+        {
+            if (*dana < total)
+            {
+                printf("Dana tidak cukup, silahkan isi dana atau pilih metode lain.\n\n");
                 break;
             }
-            case 4:{
-                printf("\n\n");
-                return;
-            }
+            printf("Pembayaran: Credit\nTerima kasih atas pesananya!\n\n\n");
+            return;
+        }
+        case 3:
+        {
+            tambahdana(&*dana);
+            break;
+        }
+        case 4:
+        {
+            printf("\n\n");
+            return;
+        }
         }
     }
 }
@@ -223,17 +241,20 @@ void tampilkeranjang(menuStruct **head)
     printf("\n\n");
 }
 
-void checkhistory() {
+void checkhistory()
+{
     FILE *fp = fopen("history.txt", "r");
-    if (!fp) {
+    if (!fp)
+    {
         printf("Belum ada riwayat pesanan.\n");
         return;
     }
 
     printf("\n===== Riwayat Pesanan =====\n");
-    
+
     char line[100];
-    while (fgets(line, sizeof(line), fp)) {
+    while (fgets(line, sizeof(line), fp))
+    {
         printf("%s", line);
     }
 
@@ -241,17 +262,19 @@ void checkhistory() {
     fclose(fp);
 }
 
-
-void checkout(menuStruct **head, menuStruct **tail) {
+void checkout(menuStruct **head, menuStruct **tail)
+{
     static int historyCount = 1;
     FILE *fp = fopen("history.txt", "a");
-    
-    if (!fp) {
+
+    if (!fp)
+    {
         printf("Gagal membuka history.txt untuk checkout!\n");
         return;
     }
 
-    if (*head == NULL) {
+    if (*head == NULL)
+    {
         printf("Keranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
         fclose(fp);
         return;
@@ -268,34 +291,41 @@ void checkout(menuStruct **head, menuStruct **tail) {
     scanf("%d", &metode);
     getchar();
 
-    switch (metode) {
-        case 1: strcpy(metodePembayaran, "Tunai"); break;
-        case 2: strcpy(metodePembayaran, "Kartu Kredit/Debit"); break;
-        case 3: strcpy(metodePembayaran, "E-Wallet"); break;
-        default:
-            printf("Metode tidak valid!\n");
-            fclose(fp);
-            return;
+    switch (metode)
+    {
+    case 1:
+        strcpy(metodePembayaran, "Tunai");
+        break;
+    case 2:
+        strcpy(metodePembayaran, "Kartu Kredit/Debit");
+        break;
+    case 3:
+        strcpy(metodePembayaran, "E-Wallet");
+        break;
+    default:
+        printf("Metode tidak valid!\n");
+        fclose(fp);
+        return;
     }
 
-    
     fprintf(fp, "\n===== History %d =====\n", historyCount);
     fprintf(fp, "Metode Pembayaran: %s\n", metodePembayaran);
     fprintf(fp, "Daftar Pesanan:\n");
-    
-    
+
     menuStruct *current = *head;
-    while (current) {
+    while (current)
+    {
         fprintf(fp, "- %s \t(Rp. %d)\n", current->name, current->harga);
         totalHarga += current->harga;
         current = current->next;
     }
-    
+
     fprintf(fp, "Total Harga: Rp. %d\n", totalHarga);
     fclose(fp);
     historyCount++;
 
-    while (*head) {
+    while (*head)
+    {
         menuStruct *temp = *head;
         *head = (*head)->next;
         free(temp);
@@ -333,7 +363,6 @@ int printMenu()
     return choice;
 }
 
-
 // Main
 int main()
 {
@@ -360,30 +389,35 @@ int main()
         }
         case 3:
         {
-            hapuspesanan();
+            hapuspesanan(&head, &tail);
             break;
         }
         case 4:
         {
-            totalharga();
+            totalharga(&head, &total);
             break;
         }
         case 5:
         {
-            checkhistory();
+            metodepembayaran(&dana, total);
             break;
         }
         case 6:
         {
-            tampilkeranjang(&head);
+            checkhistory();
             break;
         }
         case 7:
         {
-            checkout(&head, &tail);
+            tampilkeranjang(&head);
             break;
         }
         case 8:
+        {
+            checkout(&head, &tail);
+            break;
+        }
+        case 9:
         {
             printf("Terima kasih telah menggunakan aplikasi kami!!!");
             return 0;
