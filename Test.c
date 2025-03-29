@@ -345,13 +345,15 @@ int printMenu()
                        "Tambah Pesanan",
                        "Hapus Pesanan",
                        "Total Harga",
-                       "Check History Pesanan",
-                       "Cek Keranjang",
-                       "Checkout"};
+                       "Metode Pembayaran",
+                       "Cek History",
+                       "Tampilkan Keranjang",
+                       "Checkout",
+                       "Keluar" };
 
     printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
 
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < 9; i++)
     {
         printf("%d. %s\n", i + 1, menu[i]);
     }
