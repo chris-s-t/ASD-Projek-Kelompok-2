@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Struct untuk menu makanan dan minuman
 typedef struct menuStruct
 {
     char name[50];
@@ -9,6 +10,17 @@ typedef struct menuStruct
     struct menuStruct *next;
 } menuStruct;
 
+// Menampilkan bentuk pizza
+void pizzaForm() {
+    printf("        /\\        \n");
+    printf("       /  \\       \n");
+    printf("      /    \\      \n");
+    printf("     /  ()  \\     \n");
+    printf("    /  ()()  \\    \n");
+    printf("   /  ()  ()  \\   \n");
+    printf("  / ()  ()  () \\  \n");
+    printf(" /______________\\ \n");
+}
 // Menginisialisasi menu makanan dan minuman dengan file processing
 void menuMakanan(menuStruct makanan[], menuStruct minuman[])
 {
@@ -214,24 +226,37 @@ void tampilkeranjang(menuStruct **head){
     printf("\n\n");
 }
 
-void checkhistory(){
-    FILE *fp = fopen("history.txt", "r");
-    if (!fp)
-    {
-        printf("Belum ada riwayat pesanan.\n");
-        return;
-    }
-
-    printf("\n===== Riwayat Pesanan =====\n");
-
+// Menampilkan history atau menghapus history dalam history.txt
+void historyManager(char Type[]){
     char line[100];
-    while (fgets(line, sizeof(line), fp))
-    {
-        printf("%s", line);
-    }
 
-    printf("===========================\n");
-    fclose(fp);
+    if (strcmp("View", Type) == 0) {
+        FILE *fp = fopen("history.txt", "r");
+
+        if (!fp || !fgets(line, sizeof(line), fp))
+        {
+            printf("\nBelum ada riwayat pesanan.\n");
+            return;
+        }
+
+        printf("\n===== Riwayat Pesanan =====\n");
+        while (fgets(line, sizeof(line), fp))
+        {
+            printf("%s", line);
+        }
+        printf("===========================\n");
+        fclose(fp);
+    }
+    else if (strcmp("Delete", Type) == 0) {
+        FILE *fp = fopen("history.txt", "w");
+        if (!fp || !fgets(line, sizeof(line), fp))
+        {
+            printf("\nBelum ada riwayat pesanan.\n");
+            return;
+        }
+        printf("\nHistory telah dihapus\n");
+        fclose(fp);
+    }
 }
 void checkout(menuStruct **head, menuStruct **tail)
 {
@@ -317,16 +342,17 @@ int printMenu()
                        "Total Harga",
                        "Metode Pembayaran",
                        "Cek History",
+                       "Hapus History",
                        "Tampilkan Keranjang",
                        "Keluar" };
 
-    printf("\nWelcome To Pizza Hut (Food And Drinks Ordering)\n");
-
-    for (i = 0; i < 8; i++)
+    printf("\nPizza Hut Main Menu\n");
+    printf("==============================================\n");
+    for (i = 0; i < 9; i++)
     {
         printf("%d. %s\n", i + 1, menu[i]);
     }
-
+    printf("==============================================\n");
     printf("Masukkan pilihan anda : ");
     scanf("%d", &choice);
     getchar();
@@ -334,13 +360,16 @@ int printMenu()
     return choice;
 }
 // Main
-int main()
-{
+int main() {
     menuStruct makanan[40], minuman[40], *head, *tail;
     head = tail = NULL;
     menuMakanan(makanan, minuman);
     int choice, i = 0, dana = 0, total = 0;
     char orderType[20];
+
+    printf("==============================================");
+    printf("\nWelcome To Pizza Hut (Food And Drink Ordering)\n");
+    pizzaForm();
 
     while (1)
     {
@@ -373,15 +402,20 @@ int main()
             }
             case 6:
             {
-                checkhistory();
+                historyManager("View");
                 break;
             }
             case 7:
             {
-                tampilkeranjang(&head);
+                historyManager("Delete");
                 break;
             }
             case 8:
+            {
+                tampilkeranjang(&head);
+                break;
+            }
+            case 9:
             {
                 printf("Terima kasih telah menggunakan aplikasi kami!!!");
                 return 0;
