@@ -5,24 +5,24 @@
 // Struct untuk menu makanan dan minuman
 typedef struct menuStruct
 {
-    char name[50];
+    char name[100];
     int harga;
     struct menuStruct *next;
 } menuStruct;
 
 // Menampilkan bentuk pizza
 void pizzaForm() {
-    printf("\n           /\\\               /\\\               /\\\      \n");
-    printf("          /  \\\             /  \\\             /  \\\       \n");
-    printf("         /    \\\           /    \\\           /    \\\      \n");
-    printf("        /      \\\         /      \\\         /      \\\     \n");
-    printf("       /  (o)   \\\       /  (o)   \\\       /  (o)   \\\    \n");
-    printf("      /   (o)    \\\     /   (o)    \\\     /   (o)    \\\   \n");
-    printf("     /  (o) (o)   \\\   /  (o) (o)   \\\   /  (o) (o)   \\\  \n");
-    printf("    /______________\\\ /______________\\\ /______________\\\ \n");
+    printf("\n           /\\               /\\               /\\      \n");
+    printf("          /  \\             /  \\             /  \\       \n");
+    printf("         /    \\           /    \\           /    \\      \n");
+    printf("        /      \\         /      \\         /      \\     \n");
+    printf("       /  (o)   \\       /(o)     \\       /     (o)\\    \n");
+    printf("      /    (o)   \\     /      (o) \\     /   (o)    \\   \n");
+    printf("     /    (o)  (o)\\   /  (o) (o)   \\   /  (o) (o)   \\  \n");
+    printf("    /______________\\ /______________\\ /______________\\ \n");
 }
 // Menginisialisasi menu makanan dan minuman dengan file processing
-void menuMakanan(menuStruct makanan[], menuStruct minuman[])
+void menuMakanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
 {
     // Inisialisasi menu makanan
     int counter = 0;
@@ -51,6 +51,20 @@ void menuMakanan(menuStruct makanan[], menuStruct minuman[])
         counter++;
     }
     fclose(fp);
+
+    //inisialisasi menu untuk topping
+    counter = 0;
+    fp = fopen("topping.txt", "r");
+    if (!fp)
+    {
+        printf("Error: Tidak bisa membuka file topping.txt\n");
+        return;
+    }
+    while (counter < 20 && (fscanf(fp, "%[^#]#%d\n", topping[counter].name, &topping[counter].harga)) == 2)
+    {
+        counter++;
+    }
+    fclose(fp);
 }
 
 // Menampilkan menu makanan dan minuman dalam tabel
@@ -69,7 +83,7 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
         }
         else if (i == 15)
         {
-            printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n", i, makanan[i].name, makanan[i].harga);
+            printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n", i + 1, makanan[i].name, makanan[i].harga);
         }
         else
         {
@@ -78,9 +92,39 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
     }
     printf("============================================================\n\n");
 }
+void tambahtopping(menuStruct topping[], menuStruct *node){
+    int temp;
+    printf("apakah anda ingin menambahkan topping?\n");
+    printf("[0] tidak [1] iya : ");
+    scanf("%d",&temp);
+    if (temp == 0){
+        return;
+    }else if (temp > 1 || temp < 0){
+        return;
+    }
+    printf("============================================================\n");
+    printf("|ID| %27s%12s  | %7s    |\n", "Nama Topping", "", "Harga");
+    printf("============================================================\n");
+    for (int i = 0; i < 20; i++) {
+        printf("|%-2d| %-40s | Rp. %-6d |\n", i + 1, topping[i].name, topping[i].harga);
+    }
+    printf("============================================================\n");
+hm:
+    printf("pilih topping no : ");
+    scanf("%d",&temp);
+    getchar();
+    if(temp < 1 || temp > 20){
+        printf("input invalid please try again\n");
+        goto hm;
+    }
+    char top [40] = " + ";
+    strcat(top, topping[temp - 1].name);
+    strcat(node->name, top);
+    node->harga = node->harga + topping[temp-1].harga;
+}
 
 // Menambahkan pesanan ke keranjang
-void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[])
+void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
 {
     int choice, pilih;
     menuStruct *node;
@@ -109,6 +153,9 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         }
         strcpy(node->name, makanan[pilih - 1].name);
         node->harga = makanan[pilih - 1].harga;
+        if(pilih <= 15){
+            tambahtopping(topping,node);
+        }
     }
     else if (choice == 2)
     {
@@ -336,7 +383,6 @@ void checkout(menuStruct **head, menuStruct **tail)
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
 }
-
 // Menampilkan menu utama
 int printMenu()
 {
@@ -348,10 +394,9 @@ int printMenu()
                        "Check Out",
                        "Cek Riwayat Pesanan",
                        "Hapus Riwayat Pesanan",
-                       "Coming Soon",
-                       "Keluar" };
+                       "Keluar"};
     printf("\n==================== Pizza Hut Main Menu ====================\n");
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < 8; i++)
     {
         printf("%d. %s\n", i + 1, menu[i]);
     }
@@ -365,7 +410,7 @@ int printMenu()
 
 // Main
 int main() {
-    menuStruct makanan[40], minuman[40], *head, *tail;
+    menuStruct makanan[40], minuman[40], topping[30], *head, *tail;
     head = tail = NULL;
 
     int choice, i = 0, dana = 0, total = 0;
@@ -373,7 +418,7 @@ int main() {
 
     printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======");
     pizzaForm();
-    menuMakanan(makanan, minuman);
+    menuMakanan(makanan, minuman, topping);
     while (1)
     {
         choice = printMenu();
@@ -385,7 +430,7 @@ int main() {
             }
             case 2:
             {
-                tambahpesanan(&head, &tail, makanan, minuman);
+                tambahpesanan(&head, &tail, makanan, minuman, topping);
                 break;
             }
             case 3:
@@ -396,7 +441,7 @@ int main() {
             case 4:
             {
                 tampilkeranjang(&head);
-                //totalharga(&head, &total);
+                totalharga(&head, &total);
                 break;
             }
             case 5:
@@ -415,11 +460,6 @@ int main() {
                 break;
             }
             case 8:
-            {
-
-                break;
-            }
-            case 9:
             {
                 printf("Terima kasih telah menggunakan aplikasi kami!!!");
                 return 0;
