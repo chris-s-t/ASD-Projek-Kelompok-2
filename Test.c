@@ -12,14 +12,14 @@ typedef struct menuStruct
 
 // Menampilkan bentuk pizza
 void pizzaForm() {
-    printf("        /\\        \n");
-    printf("       /  \\       \n");
-    printf("      /    \\      \n");
-    printf("     /  ()  \\     \n");
-    printf("    /  ()()  \\    \n");
-    printf("   /  ()  ()  \\   \n");
-    printf("  / ()  ()  () \\  \n");
-    printf(" /______________\\ \n");
+    printf("\n           /\\\               /\\\               /\\\      \n");
+    printf("          /  \\\             /  \\\             /  \\\       \n");
+    printf("         /    \\\           /    \\\           /    \\\      \n");
+    printf("        /      \\\         /      \\\         /      \\\     \n");
+    printf("       /  (o)   \\\       /  (o)   \\\       /  (o)   \\\    \n");
+    printf("      /   (o)    \\\     /   (o)    \\\     /   (o)    \\\   \n");
+    printf("     /  (o) (o)   \\\   /  (o) (o)   \\\   /  (o) (o)   \\\  \n");
+    printf("    /______________\\\ /______________\\\ /______________\\\ \n");
 }
 // Menginisialisasi menu makanan dan minuman dengan file processing
 void menuMakanan(menuStruct makanan[], menuStruct minuman[])
@@ -56,10 +56,10 @@ void menuMakanan(menuStruct makanan[], menuStruct minuman[])
 // Menampilkan menu makanan dan minuman dalam tabel
 void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
 {
-    printf("\nMenampilkan Menu Makanan\n");
+    printf("\nMenampilkan Menu Makanan\t\t\t\t       Menampilkan Menu Minuman\n");
     printf("============================================================   ============================================================\n");
     printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
-      printf("============================================================   ============================================================\n");
+    printf("============================================================   ============================================================\n");
 
     for (int i = 0; i < 40; i++)
     {
@@ -90,10 +90,10 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         printf("Gagal mengalokasikan memori!\n");
         return;
     }
-    printf("\n==== Jenis Menu ====\n");
+    printf("\n========================= Jenis Menu ========================\n");
     printf("[1] Makanan\n");
     printf("[2] Minuman\n");
-    printf("====================\n");
+    printf("=============================================================\n");
     printf("Masukkan pilihan: ");
     scanf("%d", &choice);
     getchar();
@@ -151,22 +151,23 @@ void hapuspesanan(menuStruct **head, menuStruct **tail)
 {
     if (*head == NULL)
     {
-        printf("Belum ada pesanan yang terisi\n");
+        printf("\nBelum ada pesanan yang terisi\n");
         return;
     }
     menuStruct *temp = *head;
     int i = 1, del;
-   printf("\nMenampilkan keranjang\n"); printf("============================================================\n");
+    printf("\nMenampilkan keranjang\n");
+    printf("============================================================\n");
     printf("|No| %27s%13s | %7s%4s|\n", "Nama", "", "Harga ", "");
-      printf("============================================================\n");
+    printf("============================================================\n");
     while (temp != NULL)
     {
         printf("|%-2d| %-40s |  Rp. %-5d |\n", i, temp->name, temp->harga);
         temp = temp->next;
         i++;
     }
-   printf("============================================================\n");
-    printf("Hapus pesanan no: ");
+    printf("============================================================\n");
+    printf("Hapus pesanan No: ");
     scanf("%d", &del);
     if (del < 1 || del >= i)
     {
@@ -211,49 +212,52 @@ void totalharga(menuStruct **head, int *total)
 // Menampilkan isi keranjang
 void tampilkeranjang(menuStruct **head){
     if(*head==NULL){
-        printf("Keranjang anda kosong\n\n");
+        printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
         return;
     }
     menuStruct *temp = *head;
-    int i = 1;
-    printf("\nkeranjang anda :\n");
+    int i = 1, totalHarga = 0;
+
+    printf("\nMenampilkan keranjang\n");
+    printf("=============================================================\n");
+    printf("|No| %19s%s%19s | %2s%s%2s |\n", "", "Nama", "", "", "Harga", "");
+    printf("=============================================================\n");
     while (temp != NULL)
     {
-        printf("%d. %s\n", i, temp->name);
+        printf("|%-2d| %-42s | Rp.%-6d |\n", i, temp->name, temp->harga);
+        totalHarga += temp->harga;
         temp = temp->next;
         i++;
     }
-    printf("\n\n");
+    printf("=============================================================\n");
+    printf("|%16s%s%19s | Rp.%-6d |\n", "", "Total Harga", "", totalHarga);
+    printf("=============================================================\n");
+    printf("\n");
 }
 
 // Menampilkan history atau menghapus history dalam history.txt
 void historyManager(char Type[]){
     char line[100];
+    FILE *fp = fopen("history.txt", "r");
 
+    if (!fp || !fgets(line, sizeof(line), fp))
+    {
+        printf("\nBelum ada riwayat pesanan.\n");
+        fclose(fp);
+        return;
+    }
     if (strcmp("View", Type) == 0) {
-        FILE *fp = fopen("history.txt", "r");
-
-        if (!fp || !fgets(line, sizeof(line), fp))
-        {
-            printf("\nBelum ada riwayat pesanan.\n");
-            return;
-        }
-
-        printf("\n===== Riwayat Pesanan =====\n");
+        printf("\n===================== Riwayat Pesanan =====================\n");
         while (fgets(line, sizeof(line), fp))
         {
             printf("%s", line);
         }
-        printf("===========================\n");
+        printf("=============================================================\n");
         fclose(fp);
     }
     else if (strcmp("Delete", Type) == 0) {
+        fclose(fp);
         FILE *fp = fopen("history.txt", "w");
-        if (!fp || !fgets(line, sizeof(line), fp))
-        {
-            printf("\nBelum ada riwayat pesanan.\n");
-            return;
-        }
         printf("\nHistory telah dihapus\n");
         fclose(fp);
     }
@@ -265,13 +269,13 @@ void checkout(menuStruct **head, menuStruct **tail)
 
     if (!fp)
     {
-        printf("Gagal membuka history.txt untuk checkout!\n");
+        printf("\nGagal membuka history.txt untuk checkout!\n");
         return;
     }
 
     if (*head == NULL)
     {
-        printf("Keranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
+        printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
         fclose(fp);
         return;
     }
@@ -332,6 +336,7 @@ void checkout(menuStruct **head, menuStruct **tail)
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
 }
+
 // Menampilkan menu utama
 int printMenu()
 {
@@ -339,38 +344,36 @@ int printMenu()
     char menu[][25] = {"Tampilkan Menu",
                        "Tambah Pesanan",
                        "Hapus Pesanan",
-                       "Total Harga",
-                       "Metode Pembayaran",
-                       "Cek History",
-                       "Hapus History",
                        "Tampilkan Keranjang",
+                       "Check Out",
+                       "Cek Riwayat Pesanan",
+                       "Hapus Riwayat Pesanan",
+                       "Coming Soon",
                        "Keluar" };
-
-    printf("\nPizza Hut Main Menu\n");
-    printf("==============================================\n");
+    printf("\n==================== Pizza Hut Main Menu ====================\n");
     for (i = 0; i < 9; i++)
     {
         printf("%d. %s\n", i + 1, menu[i]);
     }
-    printf("==============================================\n");
+    printf("=============================================================\n");
     printf("Masukkan pilihan anda : ");
     scanf("%d", &choice);
     getchar();
 
     return choice;
 }
+
 // Main
 int main() {
     menuStruct makanan[40], minuman[40], *head, *tail;
     head = tail = NULL;
-    menuMakanan(makanan, minuman);
+
     int choice, i = 0, dana = 0, total = 0;
     char orderType[20];
 
-    printf("==============================================");
-    printf("\nWelcome To Pizza Hut (Food And Drink Ordering)\n");
+    printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======");
     pizzaForm();
-
+    menuMakanan(makanan, minuman);
     while (1)
     {
         choice = printMenu();
@@ -392,7 +395,8 @@ int main() {
             }
             case 4:
             {
-                totalharga(&head, &total);
+                tampilkeranjang(&head);
+                //totalharga(&head, &total);
                 break;
             }
             case 5:
@@ -412,7 +416,7 @@ int main() {
             }
             case 8:
             {
-                tampilkeranjang(&head);
+
                 break;
             }
             case 9:
