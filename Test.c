@@ -47,7 +47,7 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
     printf("\nMenampilkan Menu Makanan\n");
     printf("============================================================   ============================================================\n");
     printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
-    printf("============================================================   ============================================================\n");
+      printf("============================================================   ============================================================\n");
 
     for (int i = 0; i < 40; i++)
     {
@@ -78,17 +78,21 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         printf("Gagal mengalokasikan memori!\n");
         return;
     }
-    printf("mau (1)makanan atau (2)minuman : ");
+    printf("\n==== Jenis Menu ====\n");
+    printf("[1] Makanan\n");
+    printf("[2] Minuman\n");
+    printf("====================\n");
+    printf("Masukkan pilihan: ");
     scanf("%d", &choice);
     getchar();
     if (choice == 1)
     {
-        printf("masukan makanan pilihan anda : ");
+        printf("Masukkan ID makanan pilihan anda : ");
         scanf("%d", &pilih);
         getchar();
         if (pilih > 40 || pilih < 1)
         {
-            printf("masukan pilihan yang benar!");
+            printf("Masukkan pilihan yang benar!");
             return;
         }
         strcpy(node->name, makanan[pilih - 1].name);
@@ -96,12 +100,12 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
     }
     else if (choice == 2)
     {
-        printf("masukan minuman pilihan anda : ");
+        printf("Masukkan ID minuman pilihan anda : ");
         scanf("%d", &pilih);
         getchar();
         if (pilih > 15 || pilih < 1)
         {
-            printf("masukan pilihan yang benar!");
+            printf("Masukkan pilihan yang benar!");
             return;
         }
         strcpy(node->name, minuman[pilih - 1].name);
@@ -109,7 +113,7 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
     }
     else
     {
-        printf("masukan pilihan yang benar!");
+        printf("Masukkan pilihan yang benar!");
         return;
     }
     node->next = NULL;
@@ -140,13 +144,16 @@ void hapuspesanan(menuStruct **head, menuStruct **tail)
     }
     menuStruct *temp = *head;
     int i = 1, del;
-    printf("Keranjang anda:\n");
+   printf("\nMenampilkan keranjang\n"); printf("============================================================\n");
+    printf("|No| %27s%13s | %7s%4s|\n", "Nama", "", "Harga ", "");
+      printf("============================================================\n");
     while (temp != NULL)
     {
-        printf("%d. %s\n", i, temp->name);
+        printf("|%-2d| %-40s |  Rp. %-5d |\n", i, temp->name, temp->harga);
         temp = temp->next;
         i++;
     }
+   printf("============================================================\n");
     printf("Hapus pesanan no: ");
     scanf("%d", &del);
     if (del < 1 || del >= i)
