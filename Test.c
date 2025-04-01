@@ -94,14 +94,18 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
 }
 void tambahtopping(menuStruct topping[], menuStruct *node){
     int temp;
-    printf("apakah anda ingin menambahkan topping?\n");
-    printf("[0] tidak [1] iya : ");
+    printf("Apakah anda ingin menambahkan topping?\n");
+    printf("[0] Tidak\n");
+    printf("[1] Ya\n");
+    printf("Masukkan pilihan: ");
     scanf("%d",&temp);
     if (temp == 0){
         return;
-    }else if (temp > 1 || temp < 0){
+    }
+    else if (temp > 1 || temp < 0){
         return;
     }
+
     printf("============================================================\n");
     printf("|ID| %27s%12s  | %7s    |\n", "Nama Topping", "", "Harga");
     printf("============================================================\n");
@@ -110,17 +114,18 @@ void tambahtopping(menuStruct topping[], menuStruct *node){
     }
     printf("============================================================\n");
 hm:
-    printf("pilih topping no : ");
+    printf("Pilih topping no : ");
     scanf("%d",&temp);
     getchar();
     if(temp < 1 || temp > 20){
-        printf("input invalid please try again\n");
+        printf("Input invalid please try again\n");
         goto hm;
     }
     char top [40] = " + ";
     strcat(top, topping[temp - 1].name);
     strcat(node->name, top);
     node->harga = node->harga + topping[temp-1].harga;
+    printf("Topping ditambahkan!\n");
 }
 
 // Menambahkan pesanan ke keranjang
@@ -367,7 +372,7 @@ void checkout(menuStruct **head, menuStruct **tail)
         current = current->next;
     }
 
-    fprintf(fp, "Total Harga: Rp. %d\n", totalHarga);
+    fprintf(fp, "\nTotal Harga: Rp. %d\n", totalHarga);
     fclose(fp);
     historyCount++;
 
