@@ -248,6 +248,7 @@ void hapuspesanan(menuStruct **head, menuStruct **tail)
     free(deleteNode);
     printf("Pesanan nomor %d berhasil dihapus.\n", del);
 }
+
 void totalharga(menuStruct **head, int *total)
 {
     menuStruct *temp = *head;
@@ -261,6 +262,7 @@ void totalharga(menuStruct **head, int *total)
     }
     printf("Total harga : Rp. %d\n", *total);
 }
+
 // Menampilkan isi keranjang
 void tampilkeranjang(menuStruct **head){
     if(*head==NULL){
@@ -314,6 +316,19 @@ void historyManager(char Type[]){
         fclose(fp);
     }
 }
+
+
+void cekStatusPesanan() {
+    printf("\nStatus Pesanan:\n");
+    printf("Sedang diproses....\n");
+    sleep(5);
+    printf("Dalam perjalanan.....\n");
+    sleep(5);
+    printf("Pesanan Telah diterima :)\n");
+    printf("Pesanan sudah selesai! Selamat menikmati\n");
+}
+
+
 void checkout(menuStruct **head, menuStruct **tail)
 {
     static int historyCount = 1;
@@ -387,6 +402,7 @@ void checkout(menuStruct **head, menuStruct **tail)
     printf("\nCheckout berhasil!\n");
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
+    cekStatusPesanan();
 }
 // Menampilkan menu utama
 int printMenu()
