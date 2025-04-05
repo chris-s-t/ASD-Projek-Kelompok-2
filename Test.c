@@ -16,7 +16,8 @@ typedef struct Node {
     struct Node* next;
 } Node;
 // Menampilkan bentuk pizza
-void pizzaForm() {
+void pizzaForm() 
+{
     printf("\n           /\\               /\\               /\\      \n");
     printf("          /  \\             /  \\             /  \\       \n");
     printf("         /    \\           /    \\           /    \\      \n");
@@ -342,7 +343,7 @@ void cekStatusPesanan(menuStruct **head, menuStruct **tail) {
     Node* front = NULL;
     Node* rear = NULL;
     menuStruct *temp = *head;
-    while (temp->next != NULL){
+    while (temp != NULL){
         enqueue(&front, &rear, temp->name);
         temp = temp->next;
     }
