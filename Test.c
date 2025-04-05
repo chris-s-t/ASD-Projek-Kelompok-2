@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 // Struct untuk menu makanan dan minuman
 typedef struct menuStruct
@@ -10,6 +11,10 @@ typedef struct menuStruct
     struct menuStruct *next;
 } menuStruct;
 
+typedef struct Node {
+    char namaPesanan[100];
+    struct Node* next;
+} Node;
 // Menampilkan bentuk pizza
 void pizzaForm() {
     printf("\n           /\\               /\\               /\\      \n");
@@ -191,14 +196,6 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         (*tail) = node;
     }
 }
-void tambahdana(int *dana)
-{
-    int tambah = 0;
-    printf("Input dana: Rp. ");
-    scanf("%d", &tambah);
-    *dana += tambah;
-    printf("\n");
-}
 void hapuspesanan(menuStruct **head, menuStruct **tail)
 {
     if (*head == NULL)
@@ -317,21 +314,44 @@ void historyManager(char Type[]){
     }
 }
 
+void dequeueAll(Node **front, Node **rear) {
+    printf("\n=== Status Pesanan Sedang Diproses ===\n");
+    while (*front != NULL) {
+        Node* temp = *front;
+        printf("sedang proses pesanan: %s\n", temp->namaPesanan);
+        *front = (*front)->next;
+        free(temp);
+        Sleep(5000);
+    }
+    *rear = NULL;
+    printf("Semua pesanan telah selesai dimasak.\n");
+}
+void enqueue(Node **front, Node **rear, char *namaPesanan) {
+    Node* baru = (Node*)malloc(sizeof(Node));
+    strcpy(baru->namaPesanan, namaPesanan);
+    baru->next = NULL;
 
-void cekStatusPesanan() {
-    printf("\nStatus Pesanan:\n");
-    printf("Sedang diproses....\n");
-    sleep(5);
-    printf("Dalam perjalanan.....\n");
-    sleep(5);
-    printf("Pesanan Telah diterima :)\n");
-    printf("Pesanan sudah selesai! Selamat menikmati\n");
+    if (*rear == NULL) {
+        *front = *rear = baru;
+    } else {
+        (*rear)->next = baru;
+        *rear = baru;
+    }
+}
+void cekStatusPesanan(menuStruct **head, menuStruct **tail) {
+    Node* front = NULL;
+    Node* rear = NULL;
+    menuStruct *temp = *head;
+    while (temp->next != NULL){
+        enqueue(&front, &rear, temp->name);
+        temp = temp->next;
+    }
+    dequeueAll(&front, &rear);
 }
 
 
 void checkout(menuStruct **head, menuStruct **tail)
 {
-    static int historyCount = 1;
     FILE *fp = fopen("history.txt", "a");
 
     if (!fp)
@@ -375,7 +395,7 @@ void checkout(menuStruct **head, menuStruct **tail)
         return;
     }
 
-    fprintf(fp, "\n===== History %d =====\n", historyCount);
+    fprintf(fp, "\n===== History =====\n");
     fprintf(fp, "Metode Pembayaran: %s\n", metodePembayaran);
     fprintf(fp, "Daftar Pesanan:\n");
 
@@ -389,8 +409,21 @@ void checkout(menuStruct **head, menuStruct **tail)
 
     fprintf(fp, "\nTotal Harga: Rp. %d\n", totalHarga);
     fclose(fp);
-    historyCount++;
 
+    
+
+    printf("\nCheckout berhasil!\n");
+    printf("Total: Rp. %d\n", totalHarga);
+    printf("Metode: %s\n", metodePembayaran);
+    printf("apakah ingin melihat status pesanan anda?\n");
+    int choice;
+    printf("Yes[1]\n");
+    printf("No [0]\n");
+    scanf("%d",&choice);
+    if(choice == 1){
+        cekStatusPesanan(head, tail);
+    }
+    
     while (*head)
     {
         menuStruct *temp = *head;
@@ -398,11 +431,6 @@ void checkout(menuStruct **head, menuStruct **tail)
         free(temp);
     }
     *tail = NULL;
-
-    printf("\nCheckout berhasil!\n");
-    printf("Total: Rp. %d\n", totalHarga);
-    printf("Metode: %s\n", metodePembayaran);
-    cekStatusPesanan();
 }
 // Menampilkan menu utama
 int printMenu()
