@@ -135,7 +135,7 @@ hm:
 }
 
 // Menambahkan pesanan ke keranjang
-void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
+void tambahPesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
 {
     int choice, pilih;
     menuStruct *node;
@@ -197,7 +197,7 @@ void tambahpesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         (*tail) = node;
     }
 }
-void hapuspesanan(menuStruct **head, menuStruct **tail)
+void hapusPesanan(menuStruct **head, menuStruct **tail)
 {
     if (*head == NULL)
     {
@@ -247,7 +247,7 @@ void hapuspesanan(menuStruct **head, menuStruct **tail)
     printf("Pesanan nomor %d berhasil dihapus.\n", del);
 }
 
-void totalharga(menuStruct **head, int *total)
+void totalHarga(menuStruct **head, int *total)
 {
     menuStruct *temp = *head;
     *total = 0;
@@ -262,7 +262,7 @@ void totalharga(menuStruct **head, int *total)
 }
 
 // Menampilkan isi keranjang
-void tampilkeranjang(menuStruct **head){
+void tampilKeranjang(menuStruct **head){
     if(*head==NULL){
         printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
         return;
@@ -454,7 +454,6 @@ int printMenu()
     printf("Masukkan pilihan anda : ");
     scanf("%d", &choice);
     getchar();
-
     return choice;
 }
 
@@ -480,18 +479,18 @@ int main() {
             }
             case 2:
             {
-                tambahpesanan(&head, &tail, makanan, minuman, topping);
+                tambahPesanan(&head, &tail, makanan, minuman, topping);
                 break;
             }
             case 3:
             {
-                hapuspesanan(&head, &tail);
+                hapusPesanan(&head, &tail);
                 break;
             }
             case 4:
             {
-                tampilkeranjang(&head);
-                totalharga(&head, &total);
+                tampilKeranjang(&head);
+                totalHarga(&head, &total);
                 break;
             }
             case 5:
