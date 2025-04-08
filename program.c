@@ -11,10 +11,12 @@ typedef struct menuStruct
     struct menuStruct *next;
 } menuStruct;
 
+// Struct
 typedef struct Node {
     char namaPesanan[100];
     struct Node* next;
 } Node;
+
 // Menampilkan bentuk pizza
 void pizzaForm() 
 {
@@ -27,6 +29,7 @@ void pizzaForm()
     printf("     /    (o)  (o)\\   /  (o) (o)   \\   /  (o) (o)   \\  \n");
     printf("    /______________\\ /______________\\ /______________\\ \n");
 }
+
 // Menginisialisasi menu makanan dan minuman dengan file processing
 void menuMakanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
 {
@@ -98,6 +101,8 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
     }
     printf("============================================================\n\n");
 }
+
+// Menampilkan menu topping
 void tambahtopping(menuStruct topping[], menuStruct *node){
     int temp;
     printf("Apakah anda ingin menambahkan topping?\n");
@@ -197,6 +202,8 @@ void tambahPesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], m
         (*tail) = node;
     }
 }
+
+// Menghapus pesanan berdasarkan list keranjang
 void hapusPesanan(menuStruct **head, menuStruct **tail)
 {
     if (*head == NULL)
@@ -247,6 +254,7 @@ void hapusPesanan(menuStruct **head, menuStruct **tail)
     printf("Pesanan nomor %d berhasil dihapus.\n", del);
 }
 
+// Menghitung total harga seluruh pesanan dan jumlahnya di keranjang
 void totalHarga(menuStruct **head, int *total)
 {
     menuStruct *temp = *head;
@@ -350,7 +358,7 @@ void cekStatusPesanan(menuStruct **head, menuStruct **tail) {
     dequeueAll(&front, &rear);
 }
 
-
+// Melakukan pembayaran dan menulis ke history
 void checkout(menuStruct **head, menuStruct **tail)
 {
     FILE *fp = fopen("history.txt", "a");
@@ -411,8 +419,6 @@ void checkout(menuStruct **head, menuStruct **tail)
     fprintf(fp, "\nTotal Harga: Rp. %d\n", totalHarga);
     fclose(fp);
 
-    
-
     printf("\nCheckout berhasil!\n");
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
@@ -433,6 +439,7 @@ void checkout(menuStruct **head, menuStruct **tail)
     }
     *tail = NULL;
 }
+
 // Menampilkan menu utama
 int printMenu()
 {
@@ -457,7 +464,7 @@ int printMenu()
     return choice;
 }
 
-// Main
+// Main 
 int main() {
     menuStruct makanan[40], minuman[40], topping[30], *head, *tail;
     head = tail = NULL;
