@@ -11,6 +11,13 @@ typedef struct menuStruct
     struct menuStruct *next;
 } menuStruct;
 
+typedef struct BSTNode {
+    char name[100];
+    int harga;
+    struct BSTNode* left;
+    struct BSTNode* right;
+} BSTNode;
+
 // Struct
 typedef struct Node {
     char namaPesanan[100];
@@ -101,6 +108,22 @@ void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
     }
     printf("============================================================\n\n");
 }
+BSTNode* insertBST(BSTNode* root, menuStruct data) {
+    if (root == NULL) {
+        BSTNode* newNode = (BSTNode*)malloc(sizeof(BSTNode));
+        strcpy(newNode->name, data.name);
+        newNode->harga = data.harga;
+        newNode->left = newNode->right = NULL;
+        return newNode;
+    }
+
+    if (data.harga < root->harga)
+        root->left = insertBST(root->left, data);
+    else
+        root->right = insertBST(root->right, data);
+
+    return root;
+}
 
 // Menampilkan menu topping
 void tambahtopping(menuStruct topping[], menuStruct *node){
@@ -124,13 +147,13 @@ void tambahtopping(menuStruct topping[], menuStruct *node){
         printf("|%-2d| %-40s | Rp. %-6d |\n", i + 1, topping[i].name, topping[i].harga);
     }
     printf("============================================================\n");
-hm:
+ulang:
     printf("Pilih topping no : ");
     scanf("%d",&temp);
     getchar();
     if(temp < 1 || temp > 20){
         printf("Input invalid please try again\n");
-        goto hm;
+        goto ulang;
     }
     char top [40] = " + ";
     strcat(top, topping[temp - 1].name);
@@ -140,159 +163,125 @@ hm:
 }
 
 // Menambahkan pesanan ke keranjang
-void tambahPesanan(menuStruct **head, menuStruct **tail, menuStruct makanan[], menuStruct minuman[], menuStruct topping[])
-{
-    int choice, pilih;
-    menuStruct *node;
-    node = (menuStruct *)malloc(sizeof(menuStruct));
-    if (!node)
-    {
-        printf("Gagal mengalokasikan memori!\n");
-        return;
-    }
-    printf("\n========================= Jenis Menu ========================\n");
-    printf("[1] Makanan\n");
-    printf("[2] Minuman\n");
-    printf("=============================================================\n");
+BSTNode* tambahPesanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[], BSTNode* root) {
+    int kategori, id;
+    menuStruct pesanan;
+
+    printf("Pilih kategori:\n");
+    printf("[1] Makanan\n[2] Minuman\n");
     printf("Masukkan pilihan: ");
-    scanf("%d", &choice);
-    getchar();
-    if (choice == 1)
-    {
-        printf("Masukkan ID makanan pilihan anda : ");
-        scanf("%d", &pilih);
-        getchar();
-        if (pilih > 40 || pilih < 1)
-        {
-            printf("Masukkan pilihan yang benar!");
-            return;
+    scanf("%d", &kategori);
+
+    if (kategori == 1) {
+        tampilkanMenuMakanan(makanan); // fungsi tampilkan menu makanan
+        printf("Masukkan ID makanan: ");
+        scanf("%d", &id);
+
+        if (id < 0 || id >= 40) {
+            printf("ID tidak valid!\n");
+            return root;
         }
-        strcpy(node->name, makanan[pilih - 1].name);
-        node->harga = makanan[pilih - 1].harga;
-        if(pilih <= 15){
-            tambahtopping(topping,node);
+
+        pesanan = makanan[id];
+
+        // Cek apakah ID termasuk range makanan utama
+        if (id >= 0 && id <= 14) {
+            tambahtopping(topping, &pesanan);
         }
-    }
-    else if (choice == 2)
-    {
-        printf("Masukkan ID minuman pilihan anda : ");
-        scanf("%d", &pilih);
-        getchar();
-        if (pilih > 15 || pilih < 1)
-        {
-            printf("Masukkan pilihan yang benar!");
-            return;
+
+    } else if (kategori == 2) {
+        tampilkanMenuMinuman(minuman); // fungsi tampilkan menu minuman
+        printf("Masukkan ID minuman: ");
+        scanf("%d", &id);
+
+        if (id < 0 || id >= 40) {
+            printf("ID tidak valid!\n");
+            return root;
         }
-        strcpy(node->name, minuman[pilih - 1].name);
-        node->harga = minuman[pilih - 1].harga;
+
+        pesanan = minuman[id];
+    } else {
+        printf("Kategori tidak valid.\n");
+        return root;
     }
-    else
-    {
-        printf("Masukkan pilihan yang benar!");
-        return;
-    }
-    node->next = NULL;
-    if ((*head) == NULL)
-    {
-        (*head) = (*tail) = node;
-    }
-    else
-    {
-        (*tail)->next = node;
-        (*tail) = node;
-    }
+
+    // Masukkan ke dalam BST keranjang
+    root = insertBST(root, pesanan);
+    printf("Pesanan berhasil ditambahkan ke keranjang!\n");
+
+    return root;
 }
 
-// Menghapus pesanan berdasarkan list keranjang
-void hapusPesanan(menuStruct **head, menuStruct **tail)
-{
-    if (*head == NULL)
-    {
-        printf("\nBelum ada pesanan yang terisi\n");
-        return;
-    }
-    menuStruct *temp = *head;
-    int i = 1, del;
-    printf("\nMenampilkan keranjang\n");
-    printf("============================================================\n");
-    printf("|No| %27s%13s | %7s%4s|\n", "Nama", "", "Harga ", "");
-    printf("============================================================\n");
-    while (temp != NULL)
-    {
-        printf("|%-2d| %-40s |  Rp. %-5d |\n", i, temp->name, temp->harga);
-        temp = temp->next;
-        i++;
-    }
-    printf("============================================================\n");
-    printf("Hapus pesanan No: ");
-    scanf("%d", &del);
-    if (del < 1 || del >= i)
-    {
-        printf("Nomor pesanan tidak valid!\n");
-        return;
-    }
-    temp = *head;
-    if (del == 1)
-    {
-        *head = (*head)->next;
-        free(temp);
-        if (*head == NULL)
-            *tail = NULL;
-        return;
-    }
-    for (int j = 1; j < del - 1; j++)
-    {
-        temp = temp->next;
-    }
-    menuStruct *deleteNode = temp->next;
-    temp->next = deleteNode->next;
-    if (deleteNode == *tail)
-    {
-        *tail = temp;
-    }
-    free(deleteNode);
-    printf("Pesanan nomor %d berhasil dihapus.\n", del);
-}
 
+// menghapus pesanan
+BSTNode* hapusPesanan(BSTNode* root, int harga) {
+    if (root == NULL) {
+        printf("Pesanan dengan harga %d tidak ditemukan.\n", harga);
+        return NULL;
+    }
+
+    if (harga < root->harga) {
+        root->left = hapusPesanan(root->left, harga);
+    } else if (harga > root->harga) {
+        root->right = hapusPesanan(root->right, harga);
+    } else {
+        // Node ditemukan
+        if (root->left == NULL) {
+            BSTNode* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            BSTNode* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Dua anak: cari inorder successor
+        BSTNode* temp = root->right;
+        while (temp->left != NULL)
+            temp = temp->left;
+
+        strcpy(root->name, temp->name);
+        root->harga = temp->harga;
+        root->right = hapusPesanan(root->right, temp->harga);
+    }
+
+    return root;
+}
+BSTNode* hapusPesananInput(BSTNode* root) {
+    int harga;
+    printf("Masukkan harga pesanan yang ingin dihapus: ");
+    scanf("%d", &harga);
+    root = hapusPesanan(root, harga);
+    printf("Pesanan dengan harga %d telah dihapus.\n", harga);
+    return root;
+}
 // Menghitung total harga seluruh pesanan dan jumlahnya di keranjang
-void totalHarga(menuStruct **head, int *total)
-{
-    menuStruct *temp = *head;
-    *total = 0;
-    int i = 1;
-    while (temp != NULL)
-    {
-        *total += temp->harga;
-        temp = temp->next;
-        i++;
-    }
-    printf("Total harga : Rp. %d\n", *total);
+int totalHarga(BSTNode* root) {
+    if (root == NULL) return 0;
+    return root->harga + totalHarga(root->left) + totalHarga(root->right);
+}
+void tampilTotalHarga(BSTNode* root) {
+    int total = totalHarga(root);
+    printf("Total harga semua pesanan di keranjang: Rp. %d\n", total);
 }
 
 // Menampilkan isi keranjang
-void tampilKeranjang(menuStruct **head){
-    if(*head==NULL){
-        printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
+void inorderTampil(BSTNode* node) {
+        if (node == NULL) return;
+        inorderTampil(node->left);
+        printf("- %s | Harga: Rp. %d\n", node->name, node->harga);
+        inorderTampil(node->right);
+}
+void tampilKeranjang(BSTNode* root) {
+    if (root == NULL) {
+        printf("Keranjang masih kosong.\n");
         return;
     }
-    menuStruct *temp = *head;
-    int i = 1, totalHarga = 0;
 
-    printf("\nMenampilkan keranjang\n");
-    printf("=============================================================\n");
-    printf("|No| %19s%s%19s | %2s%s%2s |\n", "", "Nama", "", "", "Harga", "");
-    printf("=============================================================\n");
-    while (temp != NULL)
-    {
-        printf("|%-2d| %-42s | Rp.%-6d |\n", i, temp->name, temp->harga);
-        totalHarga += temp->harga;
-        temp = temp->next;
-        i++;
-    }
-    printf("=============================================================\n");
-    printf("|%16s%s%19s | Rp.%-6d |\n", "", "Total Harga", "", totalHarga);
-    printf("=============================================================\n");
-    printf("\n");
+    printf("=========== Daftar Pesanan di Keranjang ===========\n");
+    inorderTampil(root);
+    printf("====================================================\n");
 }
 
 // Menampilkan history atau menghapus history dalam history.txt
@@ -323,18 +312,6 @@ void historyManager(char Type[]){
     }
 }
 
-void dequeueAll(Node **front, Node **rear) {
-    printf("\n=== Status Pesanan Sedang Diproses ===\n");
-    while (*front != NULL) {
-        Node* temp = *front;
-        printf("sedang proses pesanan: %s\n", temp->namaPesanan);
-        *front = (*front)->next;
-        free(temp);
-        Sleep(5000);
-    }
-    *rear = NULL;
-    printf("Semua pesanan telah selesai dimasak.\n");
-}
 void enqueue(Node **front, Node **rear, char *namaPesanan) {
     Node* baru = (Node*)malloc(sizeof(Node));
     strcpy(baru->namaPesanan, namaPesanan);
@@ -347,30 +324,70 @@ void enqueue(Node **front, Node **rear, char *namaPesanan) {
         *rear = baru;
     }
 }
-void cekStatusPesanan(menuStruct **head, menuStruct **tail) {
+
+void dequeueAll(Node **front, Node **rear) {
+    printf("\n=== Status Pesanan Sedang Diproses ===\n");
+    while (*front != NULL) {
+        Node* temp = *front;
+        printf("Sedang proses pesanan: %s\n", temp->namaPesanan);
+        *front = (*front)->next;
+        free(temp);
+        Sleep(2000); // waktu dipersingkat untuk uji coba
+    }
+    *rear = NULL;
+    printf("Semua pesanan telah selesai dimasak.\n");
+}
+
+// In-order traversal BST sambil enqueue nama pesanan
+void enqueueFromBST(BSTNode* root, Node** front, Node** rear) {
+    if (root == NULL) return;
+
+    enqueueFromBST(root->left, front, rear);
+    enqueue(front, rear, root->name);
+    enqueueFromBST(root->right, front, rear);
+}
+
+// Fungsi utama cek status versi BST
+void cekStatusPesanan(BSTNode* root) {
+    if (root == NULL) {
+        printf("Tidak ada pesanan yang sedang diproses.\n");
+        return;
+    }
+
     Node* front = NULL;
     Node* rear = NULL;
-    menuStruct *temp = *head;
-    while (temp != NULL){
-        enqueue(&front, &rear, temp->name);
-        temp = temp->next;
-    }
+
+    enqueueFromBST(root, &front, &rear);
     dequeueAll(&front, &rear);
 }
 
 // Melakukan pembayaran dan menulis ke history
-void checkout(menuStruct **head, menuStruct **tail)
-{
-    FILE *fp = fopen("history.txt", "a");
+void simpanKeHistoryDanHitung(BSTNode* node, FILE* fp, int* totalHarga) {
+    if (node == NULL) return;
 
-    if (!fp)
-    {
+    fprintf(fp, "- %s \t(Rp. %d)\n", node->name, node->harga);
+    *totalHarga += node->harga;
+
+    simpanKeHistoryDanHitung(node->left, fp, totalHarga);
+    simpanKeHistoryDanHitung(node->right, fp, totalHarga);
+}
+
+void freeKeranjang(BSTNode* node) {
+    if (node == NULL) return;
+    freeKeranjang(node->left);
+    freeKeranjang(node->right);
+    free(node);
+}
+
+void checkout(BSTNode** root) {
+    FILE* fp = fopen("history.txt", "a");
+
+    if (!fp) {
         printf("\nGagal membuka history.txt untuk checkout!\n");
         return;
     }
 
-    if (*head == NULL)
-    {
+    if (*root == NULL) {
         printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
         fclose(fp);
         return;
@@ -387,57 +404,39 @@ void checkout(menuStruct **head, menuStruct **tail)
     scanf("%d", &metode);
     getchar();
 
-    switch (metode)
-    {
-    case 1:
-        strcpy(metodePembayaran, "Tunai");
-        break;
-    case 2:
-        strcpy(metodePembayaran, "Kartu Kredit/Debit");
-        break;
-    case 3:
-        strcpy(metodePembayaran, "E-Wallet");
-        break;
-    default:
-        printf("Metode tidak valid!\n");
-        fclose(fp);
-        return;
+    switch (metode) {
+        case 1: strcpy(metodePembayaran, "Tunai"); break;
+        case 2: strcpy(metodePembayaran, "Kartu Kredit/Debit"); break;
+        case 3: strcpy(metodePembayaran, "E-Wallet"); break;
+        default:
+            printf("Metode tidak valid!\n");
+            fclose(fp);
+            return;
     }
 
     fprintf(fp, "\n===== History =====\n");
     fprintf(fp, "Metode Pembayaran: %s\n", metodePembayaran);
     fprintf(fp, "Daftar Pesanan:\n");
 
-    menuStruct *current = *head;
-    while (current)
-    {
-        fprintf(fp, "- %s \t(Rp. %d)\n", current->name, current->harga);
-        totalHarga += current->harga;
-        current = current->next;
-    }
-
+    simpanKeHistoryDanHitung(*root, fp, &totalHarga);
     fprintf(fp, "\nTotal Harga: Rp. %d\n", totalHarga);
     fclose(fp);
 
     printf("\nCheckout berhasil!\n");
     printf("Total: Rp. %d\n", totalHarga);
     printf("Metode: %s\n", metodePembayaran);
-    printf("apakah ingin melihat status pesanan anda?\n");
+
     int choice;
-    printf("Yes[1]\n");
-    printf("No [0]\n");
-    scanf("%d",&choice);
-    if(choice == 1){
-        cekStatusPesanan(head, tail);
+    printf("Apakah ingin melihat status pesanan anda?\n");
+    printf("Yes[1]\nNo [0]\n");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+        cekStatusPesanan(*root);
     }
-    
-    while (*head)
-    {
-        menuStruct *temp = *head;
-        *head = (*head)->next;
-        free(temp);
-    }
-    *tail = NULL;
+
+    freeKeranjang(*root);
+    *root = NULL;
 }
 
 // Menampilkan menu utama
@@ -466,64 +465,55 @@ int printMenu()
 
 // Main 
 int main() {
-    menuStruct makanan[40], minuman[40], topping[30], *head, *tail;
-    head = tail = NULL;
+    menuStruct makanan[40], minuman[40], topping[30];
+    
+    int choice, total = 0;
+    BSTNode *keranjang = NULL;
 
-    int choice, i = 0, dana = 0, total = 0;
-    char orderType[20];
-
-    printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======");
+    printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======\n");
     pizzaForm();
     menuMakanan(makanan, minuman, topping);
-    while (1)
-    {
+
+    while (1) {
         choice = printMenu();
-        switch (choice){
+        switch (choice) {
             case 1:
-            {
                 tampilkanMenu(makanan, minuman);
                 break;
-            }
+
             case 2:
-            {
-                tambahPesanan(&head, &tail, makanan, minuman, topping);
+                keranjang = tambahPesanan(makanan, minuman, topping, keranjang);                
                 break;
-            }
+
             case 3:
-            {
-                hapusPesanan(&head, &tail);
+                keranjang = hapusPesananBST(keranjang); // harus kamu implementasikan
                 break;
-            }
+
             case 4:
-            {
-                tampilKeranjang(&head);
-                totalHarga(&head, &total);
+                printf("=== Keranjang Anda ===\n");
+                tampilKeranjang(keranjang);  // inorder traversal
+                totalHarga(keranjang); 
                 break;
-            }
+
             case 5:
-            {
-                checkout(&head, &tail);
+                checkoutBST(keranjang); // tampilkan + simpan ke file + kosongkan BST
+                keranjang = NULL;
                 break;
-            }
+
             case 6:
-            {
                 historyManager("View");
                 break;
-            }
+
             case 7:
-            {
                 historyManager("Delete");
                 break;
-            }
+
             case 8:
-            {
-                printf("Terima kasih telah menggunakan aplikasi kami!!!");
+                printf("Terima kasih telah menggunakan aplikasi kami!!!\n");
                 return 0;
-            }
+
             default:
-            {
                 printf("Masukkan pilihan yang benar!\n\n");
-            }
         }
     }
 }
