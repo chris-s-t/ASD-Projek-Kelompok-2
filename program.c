@@ -83,31 +83,107 @@ void menuMakanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[
     fclose(fp);
 }
 
-// Menampilkan menu makanan dan minuman dalam tabel
-void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
-{
-    printf("\nMenampilkan Menu Makanan\t\t\t\t       Menampilkan Menu Minuman\n");
-    printf("============================================================   ============================================================\n");
-    printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
-    printf("============================================================   ============================================================\n");
 
-    for (int i = 0; i < 40; i++)
-    {
-        if (i < 15)
-        {
-            printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i + 1, makanan[i].name, makanan[i].harga, i + 1, minuman[i].name, minuman[i].harga);
-        }
-        else if (i == 15)
-        {
-            printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n", i + 1, makanan[i].name, makanan[i].harga);
-        }
-        else
-        {
-            printf("|%-2d| %-40s | Rp. %-6d |\n", i + 1, makanan[i].name, makanan[i].harga);
+// Menampilkan menu makanan dan minuman dalam tabel
+	void tampilkanMenu(menuStruct makanan[], menuStruct minuman[])
+	{
+	    printf("\nMenampilkan Menu Makanan\t\t\t\t       Menampilkan Menu Minuman\n");
+	    printf("============================================================   ============================================================\n");
+	    printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
+	    printf("============================================================   ============================================================\n");
+	
+	    for (int i = 0; i < 40; i++)
+	    {
+	        if (i < 15)
+	        {
+	            printf("|%-2d| %-40s | Rp. %-6d |   |%-2d| %-40s | Rp. %-6d |\n", i + 1, makanan[i].name, makanan[i].harga, i + 1, minuman[i].name, minuman[i].harga);
+	        }
+	        else if (i == 15)
+	        {
+	            printf("|%-2d| %-40s | Rp. %-6d |   ============================================================\n", i + 1, makanan[i].name, makanan[i].harga);
+	        }
+	        else
+	        {
+	            printf("|%-2d| %-40s | Rp. %-6d |\n", i + 1, makanan[i].name, makanan[i].harga);
+	        }
+	    }
+	    printf("============================================================\n\n");
+	}
+
+//ALgoritma Sorting Bubble dan Insertion
+void swapStruct(menuStruct *a, menuStruct *b){
+    menuStruct temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Bubble sort dari harga terbesar ke terkecil
+void bubbleSortMenu(menuStruct arr[], int n){
+    int i, j;
+    for (i = 1; i < n; i++) {
+        for (j = n - 1; j > 0; j--) {
+            if (arr[j].harga > arr[j - 1].harga) {
+                swapStruct(&arr[j], &arr[j - 1]);
+            }
         }
     }
-    printf("============================================================\n\n");
 }
+
+// Insertion sort dari harga terkecil ke terbesar
+void insertionSortMenu(menuStruct arr[], int n){
+    int i, j;
+    menuStruct temp;
+    for (i = 0; i < n; i++) {
+        temp = arr[i];
+        for (j = i - 1; j >= 0 && arr[j].harga > temp.harga; j--) {
+            arr[j + 1] = arr[j];
+        }
+        arr[j + 1] = temp;
+    }
+}
+
+int sortMenu(menuStruct makanan[], menuStruct minuman[]){
+    int choice;
+    printf("\n=== Menu Sorting ===\n");
+    printf("1. Bubble Sort (Descending)\n");
+    printf("2. Insertion Sort (Ascending)\n");
+    printf("3. Kembali ke menu utama");
+    printf("Pilihan Anda: ");
+    scanf("%d", &choice);
+
+    switch (choice){
+        case 1:
+            bubbleSortMenu(makanan, 40);
+            bubbleSortMenu(minuman, 15);
+            printf("\nMenu diurutkan dari harga tertinggi ke terendah.\n");
+            break;
+        case 2:
+            insertionSortMenu(makanan, 40);
+            insertionSortMenu(minuman, 15);
+            printf("\nMenu diurutkan dari harga terendah ke tertinggi.\n");
+            break;
+        case 3:
+            printf("Kembali ke menu utama tanpa sorting.\n");
+            break;
+        default:
+            printf("Pilihan tidak valid. Silakan pilih lagi.\n");
+            break;
+    }
+
+    return choice;
+}
+
+//Menampung tampilkanMenu dan sortMenu untuk pilihan user
+void tampilkanMenuAwal(menuStruct makanan[], menuStruct minuman[]){
+    int sortChoice;
+    do{
+        tampilkanMenu(makanan, minuman);
+        sortChoice = sortMenu(makanan, minuman); 
+
+    }while (sortChoice != 3);
+}
+
+
 BSTNode* insertBST(BSTNode* root, menuStruct data) {
     if (root == NULL) {
         BSTNode* newNode = (BSTNode*)malloc(sizeof(BSTNode));
@@ -173,7 +249,7 @@ BSTNode* tambahPesanan(menuStruct makanan[], menuStruct minuman[], menuStruct to
     scanf("%d", &kategori);
 
     if (kategori == 1) {
-        tampilkanMenuMakanan(makanan); // fungsi tampilkan menu makanan
+        //tampilkanMenuMakanan(makanan); // fungsi tampilkan menu makanan
         printf("Masukkan ID makanan: ");
         scanf("%d", &id);
 
@@ -190,7 +266,7 @@ BSTNode* tambahPesanan(menuStruct makanan[], menuStruct minuman[], menuStruct to
         }
 
     } else if (kategori == 2) {
-        tampilkanMenuMinuman(minuman); // fungsi tampilkan menu minuman
+        //tampilkanMenuMinuman(minuman); // fungsi tampilkan menu minuman
         printf("Masukkan ID minuman: ");
         scanf("%d", &id);
 
@@ -478,7 +554,7 @@ int main() {
         choice = printMenu();
         switch (choice) {
             case 1:
-                tampilkanMenu(makanan, minuman);
+                tampilkanMenuAwal(makanan, minuman);
                 break;
 
             case 2:
@@ -486,7 +562,7 @@ int main() {
                 break;
 
             case 3:
-                keranjang = hapusPesananBST(keranjang); // harus kamu implementasikan
+                keranjang = hapusPesananInput(keranjang); // harus kamu implementasikan
                 break;
 
             case 4:
@@ -496,7 +572,7 @@ int main() {
                 break;
 
             case 5:
-                checkoutBST(keranjang); // tampilkan + simpan ke file + kosongkan BST
+                checkout(&keranjang); // tampilkan + simpan ke file + kosongkan BST
                 keranjang = NULL;
                 break;
 
