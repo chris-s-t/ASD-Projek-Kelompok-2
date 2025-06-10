@@ -360,93 +360,7 @@ void tampilKeranjang(BSTNode* root) {
     printf("====================================================\n");
 }
 
-// Menampilkan history atau menghapus history dalam history.txt
-void historyManager(char Type[]){
-    char line[100];
-    FILE *fp = fopen("history.txt", "r");
 
-    if (!fp || !fgets(line, sizeof(line), fp))
-    {
-        printf("\nBelum ada riwayat pesanan.\n");
-        fclose(fp);
-        return;
-    }
-    if (strcmp("View", Type) == 0) {
-        printf("\n===================== Riwayat Pesanan =====================\n");
-        while (fgets(line, sizeof(line), fp))
-        {
-            printf("%s", line);
-        }
-        printf("=============================================================\n");
-        fclose(fp);
-    }
-    else if (strcmp("Delete", Type) == 0) {
-        fclose(fp);
-        FILE *fp = fopen("history.txt", "w");
-        printf("\nHistory telah dihapus\n");
-        fclose(fp);
-    }
-}
-
-void enqueue(Node **front, Node **rear, char *namaPesanan) {
-    Node* baru = (Node*)malloc(sizeof(Node));
-    strcpy(baru->namaPesanan, namaPesanan);
-    baru->next = NULL;
-
-    if (*rear == NULL) {
-        *front = *rear = baru;
-    } else {
-        (*rear)->next = baru;
-        *rear = baru;
-    }
-}
-
-void dequeueAll(Node **front, Node **rear) {
-    printf("\n=== Status Pesanan Sedang Diproses ===\n");
-    while (*front != NULL) {
-        Node* temp = *front;
-        printf("Sedang proses pesanan: %s\n", temp->namaPesanan);
-        *front = (*front)->next;
-        free(temp);
-        Sleep(2000); // waktu dipersingkat untuk uji coba
-    }
-    *rear = NULL;
-    printf("Semua pesanan telah selesai dimasak.\n");
-}
-
-// In-order traversal BST sambil enqueue nama pesanan
-void enqueueFromBST(BSTNode* root, Node** front, Node** rear) {
-    if (root == NULL) return;
-
-    enqueueFromBST(root->left, front, rear);
-    enqueue(front, rear, root->name);
-    enqueueFromBST(root->right, front, rear);
-}
-
-// Fungsi utama cek status versi BST
-void cekStatusPesanan(BSTNode* root) {
-    if (root == NULL) {
-        printf("Tidak ada pesanan yang sedang diproses.\n");
-        return;
-    }
-
-    Node* front = NULL;
-    Node* rear = NULL;
-
-    enqueueFromBST(root, &front, &rear);
-    dequeueAll(&front, &rear);
-}
-
-// Melakukan pembayaran dan menulis ke history
-void simpanKeHistoryDanHitung(BSTNode* node, FILE* fp, int* totalHarga) {
-    if (node == NULL) return;
-
-    fprintf(fp, "- %s \t(Rp. %d)\n", node->name, node->harga);
-    *totalHarga += node->harga;
-
-    simpanKeHistoryDanHitung(node->left, fp, totalHarga);
-    simpanKeHistoryDanHitung(node->right, fp, totalHarga);
-}
 
 void freeKeranjang(BSTNode* node) {
     if (node == NULL) return;
@@ -456,16 +370,8 @@ void freeKeranjang(BSTNode* node) {
 }
 
 void checkout(BSTNode** root) {
-    FILE* fp = fopen("history.txt", "a");
-
-    if (!fp) {
-        printf("\nGagal membuka history.txt untuk checkout!\n");
-        return;
-    }
-
     if (*root == NULL) {
         printf("\nKeranjang kosong! Silahkan pesan makanan atau minuman terlebih dahulu.\n");
-        fclose(fp);
         return;
     }
 
@@ -486,31 +392,8 @@ void checkout(BSTNode** root) {
         case 3: strcpy(metodePembayaran, "E-Wallet"); break;
         default:
             printf("Metode tidak valid!\n");
-            fclose(fp);
-            return;
+            return; 
     }
-
-    fprintf(fp, "\n===== History =====\n");
-    fprintf(fp, "Metode Pembayaran: %s\n", metodePembayaran);
-    fprintf(fp, "Daftar Pesanan:\n");
-
-    simpanKeHistoryDanHitung(*root, fp, &totalHarga);
-    fprintf(fp, "\nTotal Harga: Rp. %d\n", totalHarga);
-    fclose(fp);
-
-    printf("\nCheckout berhasil!\n");
-    printf("Total: Rp. %d\n", totalHarga);
-    printf("Metode: %s\n", metodePembayaran);
-
-    int choice;
-    printf("Apakah ingin melihat status pesanan anda?\n");
-    printf("Yes[1]\nNo [0]\n");
-    scanf("%d", &choice);
-
-    if (choice == 1) {
-        cekStatusPesanan(*root);
-    }
-
     freeKeranjang(*root);
     *root = NULL;
 }
@@ -524,8 +407,6 @@ int printMenu()
                        "Hapus Pesanan",
                        "Tampilkan Keranjang",
                        "Check Out",
-                       "Cek Riwayat Pesanan",
-                       "Hapus Riwayat Pesanan",
                        "Keluar"};
     printf("\n==================== Pizza Hut Main Menu ====================\n");
     for (i = 0; i < 8; i++)
@@ -575,16 +456,7 @@ int main() {
                 checkout(&keranjang); // tampilkan + simpan ke file + kosongkan BST
                 keranjang = NULL;
                 break;
-
             case 6:
-                historyManager("View");
-                break;
-
-            case 7:
-                historyManager("Delete");
-                break;
-
-            case 8:
                 printf("Terima kasih telah menggunakan aplikasi kami!!!\n");
                 return 0;
 
