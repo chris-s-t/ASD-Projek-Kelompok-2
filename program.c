@@ -18,15 +18,13 @@ typedef struct BSTNode {
     struct BSTNode* right;
 } BSTNode;
 
-#define MAX_HEAP 100
-
 typedef struct {
     char name[100];
     int harga;
 } HeapNode;
 
 typedef struct {
-    HeapNode data[MAX_HEAP];
+    HeapNode data[100];
     int size;
 } Heap;
 
@@ -348,7 +346,7 @@ void checkoutbst(BSTNode** root) {
 //--------------------------------------------------------------------------------------------------------------------------
 
 void insertHeap(Heap* h, menuStruct item) {
-    if (h->size >= MAX_HEAP) {
+    if (h->size >= 100) {
         printf("Keranjang penuh!\n");
         return;
     }
