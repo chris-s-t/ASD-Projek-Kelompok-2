@@ -132,45 +132,96 @@ void insertionSortMenu(menuStruct arr[], int n){
     }
 }
 
-int sortMenu(menuStruct makanan[], menuStruct minuman[]){
+int binarySearch(menuStruct arr[], int n, int target, int isAscending) {
+    int left = 0, right = n - 1;
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (arr[mid].harga == target)
+            return mid;
+        if (isAscending) {
+            if (arr[mid].harga < target)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        } else {
+            if (arr[mid].harga > target)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+    }
+    return -1;
+}
+
+
+int sortMenu(menuStruct makanan[], menuStruct minuman[], int *sortedFlag){
     int choice;
-    printf("\n=== Menu Sorting ===\n");
+    printf("\n=== Menu Sorting dan Searching ===\n");
     printf("1. Bubble Sort (Descending)\n");
     printf("2. Insertion Sort (Ascending)\n");
-    printf("3. Kembali ke menu utama");
+	printf("3. Binary Search (berdasarkan harga)\n"); // Hanya bisa setelah melakukan bubble atau insertion
+    printf("4. Kembali ke menu utama\n");
     printf("Pilihan Anda: ");
     scanf("%d", &choice);
 
-    switch (choice){
+    switch (choice) {
         case 1:
             bubbleSortMenu(makanan, 40);
             bubbleSortMenu(minuman, 15);
             printf("\nMenu diurutkan dari harga tertinggi ke terendah.\n");
+            *sortedFlag = 1;
             break;
         case 2:
             insertionSortMenu(makanan, 40);
             insertionSortMenu(minuman, 15);
             printf("\nMenu diurutkan dari harga terendah ke tertinggi.\n");
+            *sortedFlag = 2;
             break;
         case 3:
-            printf("Kembali ke menu utama tanpa sorting.\n");
+            if (*sortedFlag == 0) {
+                printf("Anda harus melakukan sorting terlebih dahulu!\n");
+            } else {
+                int kategori, harga, index;
+                printf("Pilih kategori: Makanan (1) atau Minuman (2)\nMasukkan pilihan anda: ");
+                scanf("%d", &kategori);
+                printf("Masukkan harga yang ingin dicari: ");
+                scanf("%d", &harga);
+
+                if (kategori == 1) {
+                    index = binarySearch(makanan, 40, harga, *sortedFlag == 2);
+                    if (index != -1)
+                        printf("Ditemukan:[%d] %s | Harga: Rp. %d\n", index+1, makanan[index].name, makanan[index].harga);
+                    else
+                        printf("Tidak ditemukan makanan dengan harga Rp. %d\n", harga);
+                } else if (kategori == 2) {
+                    index = binarySearch(minuman, 15, harga, *sortedFlag == 2);
+                    if (index != -1)
+                        printf("Ditemukan:[%d] %s | Harga: Rp. %d\n", index+1, minuman[index].name, minuman[index].harga);
+                    else
+                        printf("Tidak ditemukan minuman dengan harga Rp. %d\n", harga);
+                } else {
+                    printf("Kategori tidak valid.\n");
+                }
+            }
+            break;
+        case 4:
+            printf("Kembali ke menu utama tanpa aksi lebih lanjut.\n");
             break;
         default:
             printf("Pilihan tidak valid. Silakan pilih lagi.\n");
             break;
     }
-
     return choice;
 }
 
 //Menampung tampilkanMenu dan sortMenu untuk pilihan user
-void tampilkanMenuAwal(menuStruct makanan[], menuStruct minuman[]){
+void tampilkanMenuAwal(menuStruct makanan[], menuStruct minuman[], int *sortedFlag){
     int sortChoice;
     do{
         tampilkanMenu(makanan, minuman);
-        sortChoice = sortMenu(makanan, minuman); 
+        sortChoice = sortMenu(makanan, minuman, sortedFlag); 
 
-    }while (sortChoice != 3);
+    }while (sortChoice != 4);
 }
 
 
@@ -478,12 +529,12 @@ int printMenu()
 // Main 
 int main() {
     menuStruct makanan[40], minuman[40], topping[30];
-    int choice;
+    int choice, sortedFlag = 0;	// sortedFlag untuk menentukan jika menu sudah disort dengan bubble = 1, atau insertion = 2
     printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======\n");
     pizzaForm();
     menuMakanan(makanan, minuman);
     int pilih;
-    printf("mau makan ditempat(0) atau take away(1)");
+    printf("Mau makan ditempat(0) atau take away(1)\nMasukkan pilihan anda : ");
     scanf("%d",&pilih);
     if (pilih == 0){
         BSTNode *keranjang = NULL;
@@ -491,7 +542,7 @@ int main() {
             choice = printMenu();
             switch (choice) {
                 case 1:
-                    tampilkanMenuAwal(makanan, minuman);
+                    tampilkanMenuAwal(makanan, minuman, &sortedFlag);
                     break;
 
                 case 2:
@@ -527,7 +578,7 @@ int main() {
             choice = printMenu();
             switch (choice) {
                 case 1:
-                    tampilkanMenuAwal(makanan, minuman);
+                    tampilkanMenuAwal(makanan, minuman, &sortedFlag);
                     break;
 
                 case 2:
