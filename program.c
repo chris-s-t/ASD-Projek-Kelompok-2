@@ -67,20 +67,6 @@ void menuMakanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[
         counter++;
     }
     fclose(fp);
-
-    //inisialisasi menu untuk topping
-    counter = 0;
-    fp = fopen("topping.txt", "r");
-    if (!fp)
-    {
-        printf("Error: Tidak bisa membuka file topping.txt\n");
-        return;
-    }
-    while (counter < 20 && (fscanf(fp, "%[^#]#%d\n", topping[counter].name, &topping[counter].harga)) == 2)
-    {
-        counter++;
-    }
-    fclose(fp);
 }
 
 
@@ -201,43 +187,6 @@ BSTNode* insertBST(BSTNode* root, menuStruct data) {
     return root;
 }
 
-// Menampilkan menu topping
-void tambahtopping(menuStruct topping[], menuStruct *node){
-    int temp;
-    printf("Apakah anda ingin menambahkan topping?\n");
-    printf("[0] Tidak\n");
-    printf("[1] Ya\n");
-    printf("Masukkan pilihan: ");
-    scanf("%d",&temp);
-    if (temp == 0){
-        return;
-    }
-    else if (temp > 1 || temp < 0){
-        return;
-    }
-
-    printf("============================================================\n");
-    printf("|ID| %27s%12s  | %7s    |\n", "Nama Topping", "", "Harga");
-    printf("============================================================\n");
-    for (int i = 0; i < 20; i++) {
-        printf("|%-2d| %-40s | Rp. %-6d |\n", i + 1, topping[i].name, topping[i].harga);
-    }
-    printf("============================================================\n");
-ulang:
-    printf("Pilih topping no : ");
-    scanf("%d",&temp);
-    getchar();
-    if(temp < 1 || temp > 20){
-        printf("Input invalid please try again\n");
-        goto ulang;
-    }
-    char top [40] = " + ";
-    strcat(top, topping[temp - 1].name);
-    strcat(node->name, top);
-    node->harga = node->harga + topping[temp-1].harga;
-    printf("Topping ditambahkan!\n");
-}
-
 // Menambahkan pesanan ke keranjang
 BSTNode* tambahPesanan(menuStruct makanan[], menuStruct minuman[], menuStruct topping[], BSTNode* root) {
     int kategori, id;
@@ -259,11 +208,6 @@ BSTNode* tambahPesanan(menuStruct makanan[], menuStruct minuman[], menuStruct to
         }
 
         pesanan = makanan[id];
-
-        // Cek apakah ID termasuk range makanan utama
-        if (id >= 0 && id <= 14) {
-            tambahtopping(topping, &pesanan);
-        }
 
     } else if (kategori == 2) {
         //tampilkanMenuMinuman(minuman); // fungsi tampilkan menu minuman
