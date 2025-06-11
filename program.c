@@ -18,12 +18,12 @@ typedef struct BSTNode {
     struct BSTNode* right;
 } BSTNode;
 
-typedef struct {
+typedef struct HeapNode{
     char name[100];
     int harga;
 } HeapNode;
 
-typedef struct {
+typedef struct Heap{
     HeapNode data[100];
     int size;
 } Heap;
@@ -289,33 +289,47 @@ BSTNode* tambahPesananbst(menuStruct makanan[], menuStruct minuman[], BSTNode* r
 
 
 // menghapus pesanan
-BSTNode* hapusPesanan(BSTNode* root, int harga) {
-    if (root == NULL) {
-        printf("Pesanan dengan harga %d tidak ditemukan.\n", harga);
-        return NULL;
+void caripesanan(BSTNode* root, int harga, char daftar[][50], int* count) {
+    if (root == NULL) return;
+
+    caripesanan(root->left, harga, daftar, count);
+    if (root->harga == harga) {
+        strcpy(daftar[*count], root->name);
+        (*count)++;
     }
+    caripesanan(root->right, harga, daftar, count);
+}
+BSTNode* hapusPesanan(BSTNode* root, int harga, char* name) {
+    if (root == NULL) return NULL;
 
     if (harga < root->harga) {
-        root->left = hapusPesanan(root->left, harga);
+        root->left = hapusPesanan(root->left, harga, name);
     } else if (harga > root->harga) {
-        root->right = hapusPesanan(root->right, harga);
+        root->right = hapusPesanan(root->right, harga, name);
     } else {
-        if (root->left == NULL) {
-            BSTNode* temp = root->right;
-            free(root);
-            return temp;
-        } else if (root->right == NULL) {
-            BSTNode* temp = root->left;
-            free(root);
-            return temp;
-        }
-        BSTNode* temp = root->right;
-        while (temp->left != NULL)
-            temp = temp->left;
+        int cmp = strcmp(root->name, name);
+        if (cmp > 0) {
+            root->left = hapusPesanan(root->left, harga, name);
+        } else if (cmp < 0) {
+            root->right = hapusPesanan(root->right, harga, name);
+        } else {
+            if (root->left == NULL) {
+                BSTNode* temp = root->right;
+                free(root);
+                return temp;
+            } else if (root->right == NULL) {
+                BSTNode* temp = root->left;
+                free(root);
+                return temp;
+            }
 
-        strcpy(root->name, temp->name);
-        root->harga = temp->harga;
-        root->right = hapusPesanan(root->right, temp->harga);
+            BSTNode* temp = root->right;
+            while (temp->left != NULL) temp = temp->left;
+
+            strcpy(root->name, temp->name);
+            root->harga = temp->harga;
+            root->right = hapusPesanan(root->right, temp->harga, temp->name);
+        }
     }
 
     return root;
@@ -324,8 +338,38 @@ BSTNode* hapusPesananInputbst(BSTNode* root) {
     int harga;
     printf("Masukkan harga pesanan yang ingin dihapus: ");
     scanf("%d", &harga);
-    root = hapusPesanan(root, harga);
-    printf("Pesanan dengan harga %d telah dihapus.\n", harga);
+
+    char daftar[100][50];
+    int count = 0;
+    caripesanan(root, harga, daftar, &count);
+
+    if (count == 0) {
+        printf("Tidak ditemukan pesanan dengan harga tersebut.\n");
+        return root;
+    }
+
+    char name[50];
+
+    if (count == 1) {
+        strcpy(name, daftar[0]);
+        printf("Pesanan ditemukan: %s | Harga: %d. Menghapus langsung...\n", name, harga);
+    } else {
+        printf("Ditemukan %d pesanan dengan harga %d:\n", count, harga);
+        for (int i = 0; i < count; i++) {
+            printf("%d. %s\n", i + 1, daftar[i]);
+        }
+
+        int pilihan;
+        do {
+            printf("Pilih nomor pesanan yang ingin dihapus: ");
+            scanf("%d", &pilihan);
+        } while (pilihan < 1 || pilihan > count);
+
+        strcpy(name, daftar[pilihan - 1]);
+    }
+
+    root = hapusPesanan(root, harga, name);
+    printf("Pesanan '%s' dengan harga %d telah dihapus.\n", name, harga);
     return root;
 }
 // Menghitung total harga seluruh pesanan dan jumlahnya di keranjang
@@ -432,22 +476,60 @@ void tambahPesananheap(menuStruct makanan[], menuStruct minuman[], Heap* h) {
     }
 }
 
-void deleteMax(Heap* h) {
-    if (h->size <= 0) {
+void hapusPesananHeap(Heap* h) {
+    if (h->size == 0) {
         printf("Keranjang kosong!\n");
         return;
     }
 
-    printf("Menghapus pesanan: %s | Harga: Rp. %d\n", h->data[0].name, h->data[0].harga);
-    h->data[0] = h->data[--h->size];
+    int harga;
+    printf("Masukkan harga pesanan yang ingin dihapus: ");
+    scanf("%d", &harga);
 
-    int i = 0;
+    char daftar[100][50];
+    int indeks[100], count = 0;
+
+    for (int i = 0; i < h->size; i++) {
+        if (h->data[i].harga == harga) {
+            strcpy(daftar[count], h->data[i].name);
+            indeks[count] = i;
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        printf("Tidak ditemukan pesanan dengan harga tersebut.\n");
+        return;
+    }
+
+    int number;
+
+    if (count == 1) {
+        number = indeks[0];
+        printf("Pesanan ditemukan: %s | Harga: %d. Menghapus langsung...\n", h->data[number].name, harga);
+    } else {
+        printf("Ditemukan %d pesanan dengan harga %d:\n", count, harga);
+        for (int i = 0; i < count; i++) {
+            printf("%d. %s\n", i + 1, daftar[i]);
+        }
+
+        int pilihan;
+        do {
+            printf("Pilih nomor pesanan yang ingin dihapus: ");
+            scanf("%d", &pilihan);
+        } while (pilihan < 1 || pilihan > count);
+
+        number = indeks[pilihan - 1];
+    }
+
+    printf("Menghapus pesanan: %s | Harga: Rp. %d\n", h->data[number].name, h->data[number].harga);
+    h->data[number] = h->data[--h->size];
+
+    int i = number;
     while (1) {
         int left = 2 * i + 1, right = 2 * i + 2, largest = i;
-        if (left < h->size && h->data[left].harga > h->data[largest].harga)
-            largest = left;
-        if (right < h->size && h->data[right].harga > h->data[largest].harga)
-            largest = right;
+        if (left < h->size && h->data[left].harga > h->data[largest].harga) largest = left;
+        if (right < h->size && h->data[right].harga > h->data[largest].harga) largest = right;
         if (largest == i) break;
 
         HeapNode temp = h->data[i];
@@ -586,7 +668,7 @@ int main() {
                     break;
 
                 case 3:
-                    deleteMax(&keranjangHeap); 
+                    hapusPesananHeap(&keranjangHeap); 
                     break;
 
                 case 4:
