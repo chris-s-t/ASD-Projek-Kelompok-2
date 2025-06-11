@@ -29,7 +29,7 @@ typedef struct Heap{
 } Heap;
 
 // Menampilkan bentuk pizza
-void pizzaForm() 
+void pizzaForm()
 {
     printf("\n           /\\               /\\               /\\      \n");
     printf("          /  \\             /  \\             /  \\       \n");
@@ -81,7 +81,7 @@ void menuMakanan(menuStruct makanan[], menuStruct minuman[])
 	    printf("============================================================   ============================================================\n");
 	    printf("|ID| %27s%13s | %7s%3s |   |ID| %27s%13s | %7s%3s |\n", "Nama Makanan", "", "Harga", "", "Nama Minuman", "", "Harga", "");
 	    printf("============================================================   ============================================================\n");
-	
+
 	    for (int i = 0; i < 40; i++)
 	    {
 	        if (i < 15)
@@ -219,7 +219,7 @@ void tampilkanMenuAwal(menuStruct makanan[], menuStruct minuman[], int *sortedFl
     int sortChoice;
     do{
         tampilkanMenu(makanan, minuman);
-        sortChoice = sortMenu(makanan, minuman, sortedFlag); 
+        sortChoice = sortMenu(makanan, minuman, sortedFlag);
 
     }while (sortChoice != 4);
 }
@@ -299,19 +299,19 @@ void caripesanan(BSTNode* root, int harga, char daftar[][50], int* count) {
     }
     caripesanan(root->right, harga, daftar, count);
 }
-BSTNode* hapusPesanan(BSTNode* root, int harga, char* name) {
+BSTNode* hapusPesananbst(BSTNode* root, int harga, char* name) {
     if (root == NULL) return NULL;
 
     if (harga < root->harga) {
-        root->left = hapusPesanan(root->left, harga, name);
+        root->left = hapusPesananbst(root->left, harga, name);
     } else if (harga > root->harga) {
-        root->right = hapusPesanan(root->right, harga, name);
+        root->right = hapusPesananbst(root->right, harga, name);
     } else {
         int cmp = strcmp(root->name, name);
         if (cmp > 0) {
-            root->left = hapusPesanan(root->left, harga, name);
+            root->left = hapusPesananbst(root->left, harga, name);
         } else if (cmp < 0) {
-            root->right = hapusPesanan(root->right, harga, name);
+            root->right = hapusPesananbst(root->right, harga, name);
         } else {
             if (root->left == NULL) {
                 BSTNode* temp = root->right;
@@ -328,7 +328,7 @@ BSTNode* hapusPesanan(BSTNode* root, int harga, char* name) {
 
             strcpy(root->name, temp->name);
             root->harga = temp->harga;
-            root->right = hapusPesanan(root->right, temp->harga, temp->name);
+            root->right = hapusPesananbst(root->right, temp->harga, temp->name);
         }
     }
 
@@ -368,7 +368,7 @@ BSTNode* hapusPesananInputbst(BSTNode* root) {
         strcpy(name, daftar[pilihan - 1]);
     }
 
-    root = hapusPesanan(root, harga, name);
+    root = hapusPesananbst(root, harga, name);
     printf("Pesanan '%s' dengan harga %d telah dihapus.\n", name, harga);
     return root;
 }
@@ -431,7 +431,7 @@ void checkoutbst(BSTNode** root) {
         case 3: strcpy(metodePembayaran, "E-Wallet"); break;
         default:
             printf("Metode tidak valid!\n");
-            return; 
+            return;
     }
     freeKeranjang(*root);
     *root = NULL;
@@ -583,7 +583,7 @@ void checkoutheap(Heap* h) {
     }
 
     printf("Pesanan berhasil dibayar dengan %s.\n", metodePembayaran);
-    h->size = 0; 
+    h->size = 0;
 }
 
 // Menampilkan menu utama
@@ -608,18 +608,18 @@ int printMenu()
     return choice;
 }
 
-// Main 
+// Main
 int main() {
     menuStruct makanan[40], minuman[40], topping[30];
-    int choice, sortedFlag = 0;	// sortedFlag untuk menentukan jika menu sudah disort dengan bubble = 1, atau insertion = 2
+    BSTNode *keranjang = NULL;
+    Heap keranjangHeap;
+    int choice, pilih, sortedFlag = 0;
     printf("====== Welcome To Pizza Hut (Food And Drink Ordering) =======\n");
     pizzaForm();
     menuMakanan(makanan, minuman);
-    int pilih;
     printf("Mau makan ditempat(0) atau take away(1)\nMasukkan pilihan anda : ");
     scanf("%d",&pilih);
     if (pilih == 0){
-        BSTNode *keranjang = NULL;
         while (1) {
             choice = printMenu();
             switch (choice) {
@@ -628,33 +628,33 @@ int main() {
                     break;
 
                 case 2:
-                    keranjang = tambahPesananbst(makanan, minuman, keranjang);                
+                    keranjang = tambahPesananbst(makanan, minuman, keranjang);
                     break;
 
                 case 3:
-                    keranjang = hapusPesananInputbst(keranjang); 
+                    keranjang = hapusPesananInputbst(keranjang);
                     break;
 
                 case 4:
                     printf("=== Keranjang Anda ===\n");
-                    tampilKeranjangbst(keranjang);  
-                    totalHargabst(keranjang); 
+                    tampilKeranjangbst(keranjang);
+                    totalHargabst(keranjang);
                     break;
 
                 case 5:
-                    checkoutbst(&keranjang); 
+                    checkoutbst(&keranjang);
                     keranjang = NULL;
                     break;
                 case 6:
                     printf("Terima kasih telah menggunakan aplikasi kami!!!\n");
+                    freeKeranjang(keranjang);
                     return 0;
 
                 default:
                     printf("Masukkan pilihan yang benar!\n\n");
             }
         }
-    }else if(pilih == 1){ 
-        Heap keranjangHeap;
+    }else if(pilih == 1){
         keranjangHeap.size = 0;
         while (1) {
             choice = printMenu();
@@ -664,16 +664,16 @@ int main() {
                     break;
 
                 case 2:
-                    tambahPesananheap(makanan, minuman, &keranjangHeap);                
+                    tambahPesananheap(makanan, minuman, &keranjangHeap);
                     break;
 
                 case 3:
-                    hapusPesananHeap(&keranjangHeap); 
+                    hapusPesananHeap(&keranjangHeap);
                     break;
 
                 case 4:
                     printf("=== Keranjang Anda ===\n");
-                    tampilKeranjangheap(&keranjangHeap); 
+                    tampilKeranjangheap(&keranjangHeap);
                     totalHargaheap(&keranjangHeap);
                     break;
 
@@ -683,7 +683,6 @@ int main() {
                 case 6:
                     printf("Terima kasih telah menggunakan aplikasi kami!!!\n");
                     return 0;
-
                 default:
                     printf("Masukkan pilihan yang benar!\n\n");
             }
