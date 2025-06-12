@@ -1,0 +1,40 @@
+Splitza Signature#90000
+Splitza Classic#80000
+Veggie Garden#76000
+Meat Lovers#86000
+Super Supreme#86000
+Tuna Melt#76000
+Cheesy Galore#76000
+Meat Lovers Cheesy Mayo#86000
+American Favourite#86000
+Super Supreme Chicken#86000
+Pepperoni#86000
+Meaty#76000
+Chicken Puff Pizza#86000
+Meat Lovers Chicken#86000
+Hawaiian Chicken#76000
+Beef Lasagna#65000
+Beef Spaghetti#46000
+Chicken Fettuccine alla Italia#65000
+Black Pepper Chicken/Beef Fettuccine#54000
+Tuna Aglio Olio Spaghetti#54000
+Oriental Chicken Spaghetti#66000
+Cumi Cabe Ijo#73000
+Meatballs Beef Mushroom Rice#43000
+Black Pepper Chicken Rice#43000
+Oriental Chicken Rice#43000
+Thai Chicken Rice#43000
+New Orleans Chicken Wings#43000
+Baked Chicken Chunks#42000
+Sausage Pastry Roll#34000
+Garlic Bread#24000
+Chicken Royale#41000
+Nacho Cheese#34000
+Deluxe Beef Bruschetta#28000
+Deluxe Chicken Bruschetta#28000
+Garlic Cheese Bread#28000
+Choco Puff#34000
+Cheese Rolls#34000
+Potato Wedges#26000
+Cheese Martabak Pizza#37000
+Fresh Salad#42000
