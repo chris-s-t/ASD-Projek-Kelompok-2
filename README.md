@@ -1,2 +1,2 @@
-# UTS Algoritma Kelompok-2
- Repositori untuk project UTS Algoritma
+# Algoritma Kelompok-2
+ Repositori untuk projek UTS dan UAS Algoritma & Struktur Data
